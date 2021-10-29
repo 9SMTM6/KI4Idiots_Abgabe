@@ -10,7 +10,11 @@ appliedFeatures = {
 def main():
     loadDataApplyFeaturesAndSave(appliedFeatures)
 
-def loadDataApplyFeaturesAndSave(featuresToApply: dict[str, FeatureType]):
+def loadDataApplyFeaturesAndSave(
+    featuresToApply: dict[str, FeatureType],
+    input_path = "./20newsgroups.json", 
+    output_path = "./processedData.json",
+):
     """
     This takes the features to apply to the data in 20newsgroups.json,
     applies them and creates a weka-compatible processedData.json
@@ -18,10 +22,10 @@ def loadDataApplyFeaturesAndSave(featuresToApply: dict[str, FeatureType]):
     The features are to be passed in a dict (aka js object),
     with the name of the feature as key, the feature funktion as value
     """
-    # You can pass arguments by parameter
+    # You can pass arguments by name
     jsonData = JsonData(
-        input_path = "./20newsgroups.json", 
-        output_path = "./processedData.json"
+        input_path = input_path, 
+        output_path = output_path
     )
     jsonData.saveToFile(
         applyFeatures(
