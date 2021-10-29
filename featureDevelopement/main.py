@@ -1,10 +1,13 @@
 from exampleFeatures import *
 from applyFeatures import applyFeatures
-from jsonParsing import loadData
+from jsonParsing import JsonData
 
 def main():
-    print(loadData())
-    print(applyFeatures([getLength, countAsciiValues], ["a", "aaa", "aaaaaaa"]))
+    jsonData = JsonData()
+    jsonData.saveToFile(applyFeatures(
+        [getLength, countAsciiValues],
+        jsonData.blogEntries
+    ))
 
 if __name__== "__main__":
     main()
