@@ -47,4 +47,4 @@ class JsonData:
                 })
                 for idx, entry in enumerate(data):
                     self.jsonRepr["data"][idx]["values"].append(entry)
-            json.dump(self.jsonRepr, filePointer)
+            json.dump(self.jsonRepr, filePointer, indent=4)
