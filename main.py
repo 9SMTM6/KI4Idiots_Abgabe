@@ -9,10 +9,14 @@ appliedFeatures = {
 }
 
 def main():
-    loadDataApplyFeaturesAndSave(appliedFeatures)
-    with open("./20newsgroups_processed.json") as filePointer:
-        split = RandomSplit(json.load(filePointer))
-        split.saveToFiles("20newsGroups")
+    name = "20newsgroups"
+    loadDataApplyFeaturesAndSave(
+        appliedFeatures,
+        input_path = f"{name}.json",
+    )
+    with open(f"./{name}_processed.json") as filePointer:
+        split = RandomSplit(json.load(filePointer), seed = countAsciiValues("KI4Idiots"))
+    split.saveToFiles(name)
 
 
 # Das ist ein wenig nerfig bei python, wenn man von einem anderen file importiert

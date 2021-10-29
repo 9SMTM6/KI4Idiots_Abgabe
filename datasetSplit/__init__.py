@@ -2,9 +2,9 @@ import random
 import json
 
 class RandomSplit:
-    def __init__(self, jsonRepr: dict):
+    def __init__(self, jsonRepr: dict, seed: int):
         # set random state to ensure reproducibility
-        random.seed(len("KI4Idiots"))
+        random.seed(seed)
 
         header = jsonRepr["header"]
         data: list = jsonRepr["data"]
