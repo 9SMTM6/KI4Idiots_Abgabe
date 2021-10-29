@@ -11,7 +11,7 @@ def main():
     loadDataApplyFeaturesAndSave(appliedFeatures)
 
 def loadDataApplyFeaturesAndSave(featuresToApply: dict[str, FeatureType]):
-    """"
+    """
     This takes the features to apply to the data in 20newsgroups.json,
     applies them and creates a weka-compatible processedData.json
 
