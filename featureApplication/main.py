@@ -19,7 +19,10 @@ def loadDataApplyFeaturesAndSave(featuresToApply: dict[str, FeatureType]):
     with the name of the feature as key, the feature funktion as value
     """
     # You can pass arguments by parameter
-    jsonData = JsonData(input_path = "./20newsgroups.json", output_path = "./processedData.json")
+    jsonData = JsonData(
+        input_path = "./20newsgroups.json", 
+        output_path = "./processedData.json"
+    )
     jsonData.saveToFile(
         applyFeatures(
             featuresToApply,
