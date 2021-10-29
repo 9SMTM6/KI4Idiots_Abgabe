@@ -10,15 +10,16 @@ class JsonData:
     # Python has no concept of private and public,
     # if something is meant to be "private" its convention to prepend an underscore to it.
     # BEWARE: Variables assigned here are STATIC variables
-    _INPUT_JSON_PATH = "./20newsgroups.json"
+    _SOME_STATIC_VAR = "whatever"
 
-    _OUTPUT_JSON_PATH = "./processedData.json"
-
-    def __init__(self):
+    def __init__(self, input_path = "./20newsgroups.json", output_path = "./processedData.json"):
         # This is the constructor of classes in Python
 
+        self.input_path = input_path
+        self.output_path = output_path
+
         # Internal methods, that get called by python, as the constructor is one, get framed in 2 underscores
-        with open(JsonData._INPUT_JSON_PATH,) as filePointer:
+        with open(input_path,) as filePointer:
             # these types are simply suggestions to get better code completion, and not required.
             self.jsonRepr: dict = json.load(filePointer)
             # self.header = jsonRepr["header"]
@@ -37,7 +38,7 @@ class JsonData:
         # called self instead of this, in the parameter list.
         
         # A static method simply doesnt have a self parameter.
-        with open(JsonData._OUTPUT_JSON_PATH, "w") as filePointer:
+        with open(self.output_path, "w") as filePointer:
             for key, data in additionalData.items():
                 self.jsonRepr["header"]["attributes"].append({
                     "name": key,
