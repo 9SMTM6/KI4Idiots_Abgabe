@@ -12,8 +12,8 @@ def main():
 
 def loadDataApplyFeaturesAndSave(
     featuresToApply: dict[str, FeatureType],
-    input_path = "./20newsgroups.json", 
-    output_path = "./processedData.json",
+    input_path = "./20newsgroups.json",
+    output_path = None,
 ):
     """
     This takes the features to apply to the data in 20newsgroups.json,
@@ -24,8 +24,8 @@ def loadDataApplyFeaturesAndSave(
     """
     # You can pass arguments by name
     jsonData = JsonData(
-        input_path = input_path, 
-        output_path = output_path
+        input_path = input_path,
+        output_path = output_path,
     )
     jsonData.saveToFile(
         applyFeatures(

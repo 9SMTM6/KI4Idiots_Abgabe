@@ -12,11 +12,16 @@ class JsonData:
     # BEWARE: Variables assigned here are STATIC variables
     _SOME_STATIC_VAR = "whatever"
 
-    def __init__(self, input_path = "./20newsgroups.json", output_path = "./processedData.json"):
+    def __init__(
+        self, 
+        input_path:str = "./20newsgroups.json", 
+        output_path = None,
+    ):
         # This is the constructor of classes in Python
 
-        self.input_path = input_path
-        self.output_path = output_path
+        self.input_path: str = input_path
+        # if no string was passed generate one from the input path
+        self.output_path: str = output_path or f"{input_path[:-5]}_processed.json"
 
         # Internal methods, that get called by python, as the constructor is one, get framed in 2 underscores
         with open(input_path,) as filePointer:
