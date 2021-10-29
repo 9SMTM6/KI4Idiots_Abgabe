@@ -2,10 +2,13 @@ import random
 import json
 
 class RandomSplit:
-    def __init__(self, jsonRepr: dict, seed: int):
+    def __init__(self, fileName: str, seed: int):
         # set random state to ensure reproducibility
         random.seed(seed)
-
+        
+        with open(f"./{fileName}.json") as filePointer:
+            jsonRepr = json.load(filePointer)
+        
         header = jsonRepr["header"]
         data: list = jsonRepr["data"]
         # randomly shuffle the date for later random selection

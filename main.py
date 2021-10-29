@@ -1,7 +1,6 @@
 from featureApplication import loadDataApplyFeaturesAndSave
 from datasetSplit import RandomSplit
 from exampleFeatures import getLength, countAsciiValues
-import json
 
 appliedFeatures = {
     "textLenght": getLength,
@@ -14,9 +13,9 @@ def main():
         appliedFeatures,
         input_path = f"{name}.json",
     )
-    with open(f"./{name}_processed.json") as filePointer:
-        split = RandomSplit(json.load(filePointer), seed = countAsciiValues("KI4Idiots"))
-    split.saveToFiles(name)
+    # To continue a statement end the line with a "\"
+    RandomSplit(f"{name}_processed", seed = countAsciiValues("KI4Idiots"))\
+        .saveToFiles(name)
 
 
 # Das ist ein wenig nerfig bei python, wenn man von einem anderen file importiert
