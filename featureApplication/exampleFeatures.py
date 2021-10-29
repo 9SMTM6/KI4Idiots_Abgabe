@@ -1,4 +1,5 @@
-"""Some, probably not interesting for the future, feature functions that I used to test
+"""
+Some, probably not interesting for the future, feature functions that I used to test
 """
 
 def countAsciiValues(input: str):
