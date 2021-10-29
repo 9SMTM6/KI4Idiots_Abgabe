@@ -14,17 +14,17 @@ class JsonData:
 
     def __init__(
         self, 
-        input_path:str = "./20newsgroups.json", 
+        input_path:str = "20newsgroups", 
         specific_output_path = None,
     ):
         # This is the constructor of classes in Python
 
-        self.input_path: str = input_path
+        self.input_path: str = f"{input_path}.json"
         # if no string was passed generate one from the input path
-        self.specific_output_path: str = specific_output_path or f"{input_path[:-5]}_processed.json"
+        self.specific_output_path: str = specific_output_path or f"{input_path}_processed.json"
 
         # Internal methods, that get called by python, as the constructor is one, get framed in 2 underscores
-        with open(input_path,) as filePointer:
+        with open(self.input_path) as filePointer:
             # these types are simply suggestions to get better code completion, and not required.
             self.jsonRepr: dict = json.load(filePointer)
             # self.header = jsonRepr["header"]

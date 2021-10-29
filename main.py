@@ -11,12 +11,15 @@ def main():
     name = "20newsgroups"
     loadDataApplyFeaturesAndSave(
         appliedFeatures,
-        input_path = f"{name}.json",
+        input_path = name,
     )
+    RandomSplit(
+        f"{name}_processed",
+        seed = countAsciiValues("KI4Idiots"),
+        partForTrainAndCompare = 0.1,
     # To continue a statement end the line with a "\"
-    RandomSplit(f"{name}_processed", seed = countAsciiValues("KI4Idiots"))\
+    )\
         .saveToFiles(name)
-
 
 # Das ist ein wenig nerfig bei python, wenn man von einem anderen file importiert
 #  wird alles in dem file ausgeführt.

@@ -3,7 +3,7 @@ from .jsonParsing import JsonData
 
 def loadDataApplyFeaturesAndSave(
     featuresToApply: dict[str, FeatureType],
-    input_path = "./20newsgroups.json",
+    input_path = "20newsgroups",
     specific_output_path = None,
 ):
     """

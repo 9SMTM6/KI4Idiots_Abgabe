@@ -2,7 +2,7 @@ import random
 import json
 
 class RandomSplit:
-    def __init__(self, fileName: str, seed: int):
+    def __init__(self, fileName: str, seed: int, partForTrainAndCompare: float = 0.1,):
         # set random state to ensure reproducibility
         random.seed(seed)
         
@@ -13,8 +13,8 @@ class RandomSplit:
         data: list = jsonRepr["data"]
         # randomly shuffle the date for later random selection
         random.shuffle(data)
-        train_until = int(0.8 * len(data))
-        compare_until = int(0.9 * len(data))
+        train_until = int((1 - 2 * partForTrainAndCompare) * len(data))
+        compare_until = int((1 - 1 * partForTrainAndCompare) * len(data))
         # split the shuffled data in designated data sets with an 80:10:10 rule
         self.train = {
             "header": header,
