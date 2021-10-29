@@ -1,0 +1,5 @@
+__pycache__
+*_processed.json
+*_train.json
+*_compare.json
+*_validate.json
