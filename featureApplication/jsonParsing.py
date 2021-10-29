@@ -15,13 +15,13 @@ class JsonData:
     def __init__(
         self, 
         input_path:str = "./20newsgroups.json", 
-        output_path = None,
+        specific_output_path = None,
     ):
         # This is the constructor of classes in Python
 
         self.input_path: str = input_path
         # if no string was passed generate one from the input path
-        self.output_path: str = output_path or f"{input_path[:-5]}_processed.json"
+        self.specific_output_path: str = specific_output_path or f"{input_path[:-5]}_processed.json"
 
         # Internal methods, that get called by python, as the constructor is one, get framed in 2 underscores
         with open(input_path,) as filePointer:
@@ -43,7 +43,7 @@ class JsonData:
         # called self instead of this, in the parameter list.
         
         # A static method simply doesnt have a self parameter.
-        with open(self.output_path, "w") as filePointer:
+        with open(self.specific_output_path, "w") as filePointer:
             for key, data in additionalData.items():
                 self.jsonRepr["header"]["attributes"].append({
                     "name": key,
