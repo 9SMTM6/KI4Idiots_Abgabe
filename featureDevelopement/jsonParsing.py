@@ -1,9 +1,23 @@
+"""
+This handles the reading from the JSON file,
+and saving the results of the application of our feature functions to another JSON file
+"""
+
 import json
 
 class JsonData:
     """Lets see if our PCs blow up due to the RAM hunger this might have"""
     def __init__(self):
+        """
+        This is the constructor of classes in Python
+        
+        Python has no concept of private and public, 
+        if something is meant to be "private" its convention to prepend an underscore to it.
+
+        Internal methods, that get called by python, as the constructor is one, get framed in 2 underscores
+        """
         with open("./20newsgroups.json",) as filePointer:
+            # these types are simply suggestions to get better code completion, and not required.
             self.jsonRepr: dict = json.load(filePointer)
             # self.header = jsonRepr["header"]
             # sparse and weight hold no value, theyre constantly false, 1.0, so we skip them
@@ -16,7 +30,13 @@ class JsonData:
                 self.blogEntries.append(blogEntry)
                 # self.groups.append(group)
 
-    def saveToFile(self, additionalData: dict[list[float]]):
+    def saveToFile(self, additionalData: dict[str, list[float]]):
+        """
+        In methods, as with the constructor, you need to explicitly pass the class instance, 
+        called self instead of this, in the parameter list.
+        
+        A static method simlpy doesnt have a self parameter.
+        """
         with open("./processedData.json", "w") as filePointer:
             for key, data in additionalData.items():
                 self.jsonRepr["header"]["attributes"].append({
