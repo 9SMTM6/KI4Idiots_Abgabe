@@ -10,9 +10,7 @@ def countAsciiValues(input: str):
 def getLength(input: str):
     return len(input)
 
-
-
-def countWordsOfList(wordlist)->dict[str,Callable]:
+def countWordsOfList(wordList)->dict[str,Callable]:
     funct_dict={}
     for word in wordList:
         funct_dict[f"occ_{word}"]=lambda input: input.count(word)
