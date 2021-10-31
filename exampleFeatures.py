@@ -12,8 +12,7 @@ def getLength(input: str):
 
 
 
-def countWordsOfList(input: str)->dict[str,Callable]:
-    wordList=["space","image","the","you"]
+def countWordsOfList(wordlist)->dict[str,Callable]:
     funct_dict={}
     for word in wordList:
         funct_dict[f"occ_{word}"]=lambda input: input.count(word)
