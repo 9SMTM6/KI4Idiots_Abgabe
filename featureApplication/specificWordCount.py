@@ -2,10 +2,17 @@ from typing import Callable
 
 
 def countWordsOfList(wordList)->dict[str,Callable]:
+    "add new word-count-feature for each word in wordList"
+
+    #define new function to create each wordcount function
     def countWord(word):
         return lambda input: input.count(word)
-    funct_dict={}
+
+    #declare variable to store features
+    feature_dict={}
+
+    #add feature for each word
     for word in wordList:
-        funct_dict[f"occ_{word}"]=countWord(word)
+        feature_dict[f"occ_{word}"]=countWord(word)
     
-    return funct_dict
+    return feature_dict
