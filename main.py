@@ -6,6 +6,7 @@ appliedFeatures = {
     **countWordsOfList(["space","image","the","you"]),
     "textLenght": getLength,
     "asciiValueSum": countAsciiValues,
+    "textLength": len,
 }
 
 def main():
