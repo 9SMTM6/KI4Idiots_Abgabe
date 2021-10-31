@@ -3,7 +3,7 @@ from datasetSplit import RandomSplit
 from exampleFeatures import getLength, countAsciiValues, countWordsOfList
 
 appliedFeatures = {
-    **countWordsOfList("null"),
+    **countWordsOfList(["space","image","the","you"]),
     "textLenght": getLength,
     "asciiValueSum": countAsciiValues,
 }
