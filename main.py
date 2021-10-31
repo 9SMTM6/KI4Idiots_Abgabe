@@ -1,8 +1,9 @@
 from featureApplication import loadDataApplyFeaturesAndSave
 from datasetSplit import RandomSplit
-from exampleFeatures import getLength, countAsciiValues
+from exampleFeatures import getLength, countAsciiValues, countWordsOfList
 
 appliedFeatures = {
+    **countWordsOfList("null"),
     "textLenght": getLength,
     "asciiValueSum": countAsciiValues,
 }
