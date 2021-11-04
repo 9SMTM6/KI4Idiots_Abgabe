@@ -3,10 +3,13 @@ from exampleFeatures import getLength, countAsciiValues
 from featureApplication import applyFeatures, JsonData
 from featureCode.specificWordCount import countWordsOfList
 
+
+#import wordlist
 wordList=[]
 with open("wordList.txt") as words:
     for line in words:
         wordList.append(line.removesuffix("\n"))
+
 
 appliedFeatures = {
     **countWordsOfList(wordList),
