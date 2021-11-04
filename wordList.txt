@@ -3,3 +3,4 @@ bible
 image
 lord
 photo
+graphic
