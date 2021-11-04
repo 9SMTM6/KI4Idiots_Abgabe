@@ -2,4 +2,4 @@ space
 bible
 image
 lord
-photos
+photo

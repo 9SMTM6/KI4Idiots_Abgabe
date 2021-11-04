@@ -13,6 +13,6 @@ def countWordsOfList(wordList)->dict[str,Callable]:
 
     #add feature for each word
     for word in wordList:
-        feature_dict[f"occ_{word}"]=countWord(word)
+        feature_dict[f"freq_{word}"]=countWord(word)
     
     return feature_dict
