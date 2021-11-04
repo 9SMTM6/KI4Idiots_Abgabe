@@ -1,10 +1,15 @@
 from datasetSplit import RandomSplit
 from exampleFeatures import getLength, countAsciiValues
 from featureApplication import applyFeatures, JsonData
-from featureApplication.specificWordCount import countWordsOfList
+from featureCode.specificWordCount import countWordsOfList
+
+wordList=[]
+with open("wordList.txt") as words:
+    for line in words:
+        wordList.append(line.removesuffix("\n"))
 
 appliedFeatures = {
-    **countWordsOfList(["space","image","the","you"]),
+    **countWordsOfList(wordList),
     "textLenght": getLength,
     "asciiValueSum": countAsciiValues,
     "textLength": len,
