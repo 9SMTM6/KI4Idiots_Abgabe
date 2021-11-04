@@ -1,9 +1,7 @@
 from datasetSplit import RandomSplit
 from exampleFeatures import getLength, countAsciiValues
 from featureApplication import applyFeatures, JsonData
-from featureCode.specificWordCount import countWordsOfList
-from featureCode.lexical_diversity import lexicalDiversity
-
+from featureCode import *
 
 #import wordlist
 wordList=[]
@@ -37,7 +35,7 @@ def main():
                     jsonData.blogEntries
                 )
             )\
-            .saveToFile()    
+            .saveToFile()
 
 # Das ist ein wenig nerfig bei python, wenn man von einem anderen file importiert
 #  wird alles in dem file ausgeführt.
