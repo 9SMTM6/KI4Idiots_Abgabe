@@ -22,22 +22,22 @@ appliedFeatures = {
 
 def main():
     name = "20newsgroups"
-    # You can pass arguments by name
-    jsonData = JsonData(input_name = name)
-    jsonData\
-        .addData(
-            applyFeatures(
-                appliedFeatures,
-                jsonData.blogEntries
-            )
-        )\
-        .saveToFile()
     RandomSplit(
-        f"{name}_processed",
+        name,
         seed = countAsciiValues("KI4Idiots"),
-        partForTrainAndCompare = 0.1,
+        partForTrainAndCompare = 0.2,
     ).saveToFiles(name)
-
+    for version in ["train", "compare", "validate"]:
+        # You can pass arguments by name
+        jsonData = JsonData(input_name = f"{name}_{version}")
+        jsonData\
+            .addData(
+                applyFeatures(
+                    appliedFeatures,
+                    jsonData.blogEntries
+                )
+            )\
+            .saveToFile()    
 
 # Das ist ein wenig nerfig bei python, wenn man von einem anderen file importiert
 #  wird alles in dem file ausgeführt.
