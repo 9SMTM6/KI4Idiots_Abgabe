@@ -3,6 +3,7 @@ from exampleFeatures import getLength, countAsciiValues
 from featureApplication import applyFeatures, JsonData
 from featureCode.lexical_diversity import lexicalDiversityLemmatizedNostop
 from featureCode.specificWordCount import countWordsOfList
+from featureCode.total_word_count import total_word_count
 
 
 #import wordlist
@@ -18,6 +19,7 @@ appliedFeatures = {
     "asciiValueSum": countAsciiValues,
     "textLength": len,
     "lexicalDiversity": lexicalDiversityLemmatizedNostop,
+    "totalWorCount": total_word_count,
 }
 
 def main():
