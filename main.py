@@ -4,6 +4,7 @@ from featureApplication import applyFeatures, JsonData
 from featureCode.lexical_diversity import lexicalDiversityLemmatizedNostop
 from featureCode.specificWordCount import countWordsOfList
 from featureCode.total_word_count import total_word_count
+from featureCode.count_chars import count_chars_ignore_whitespace
 
 
 #import wordlist
@@ -20,6 +21,7 @@ appliedFeatures = {
     "textLength": len,
     "lexicalDiversity": lexicalDiversityLemmatizedNostop,
     "totalWorCount": total_word_count,
+    "count_chars": count_chars_ignore_whitespace,
 }
 
 def main():
