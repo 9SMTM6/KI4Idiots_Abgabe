@@ -10,10 +10,11 @@ def clean_up_punctuation(tokens):
         for ch in t:
             if(ch.isalnum()):
                 is_all_punct=False
-
-        if(is_all_punct):
+        if(not is_all_punct):
             tokens_cleaned.append(t)
+    return tokens_cleaned
 
 
 def total_word_count(input: str):
+    "count all words in post disregarding punctuation"
     return len(clean_up_punctuation(word_tokenize(input)))
