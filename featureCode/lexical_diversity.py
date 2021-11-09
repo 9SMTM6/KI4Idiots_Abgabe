@@ -5,6 +5,8 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
 
+#source lemmatizer: https://stackoverflow.com/questions/15586721/wordnet-lemmatization-and-pos-tagging-in-python -> last answer
+
 tag_dict = {"J": wordnet.ADJ,
             "N": wordnet.NOUN,
             "V": wordnet.VERB,
