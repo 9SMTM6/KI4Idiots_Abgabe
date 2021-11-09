@@ -1,7 +1,9 @@
 from datasetSplit import RandomSplit
 from exampleFeatures import getLength, countAsciiValues
 from featureApplication import applyFeatures, JsonData
-from featureCode import *
+from featureCode.lexical_diversity import lexicalDiversityLemmatizedNostop
+from featureCode.specificWordCount import countWordsOfList
+
 
 #import wordlist
 wordList=[]
@@ -15,7 +17,7 @@ appliedFeatures = {
     "textLenght": getLength,
     "asciiValueSum": countAsciiValues,
     "textLength": len,
-    "lexicalDiversity": lexicalDiversity,
+    "lexicalDiversity": lexicalDiversityLemmatizedNostop,
 }
 
 def main():
