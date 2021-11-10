@@ -5,6 +5,8 @@ from featureCode.lexical_diversity import lexicalDiversityLemmatizedNostop
 from featureCode.specificWordCount import countWordsOfList
 from featureCode.total_word_count import total_word_count
 from featureCode.count_chars import count_chars_ignore_whitespace
+from featureCode.total_word_count import average_word_length
+from featureCode.total_word_count import max_word_length
 
 
 #import wordlist
@@ -20,8 +22,10 @@ appliedFeatures = {
     "asciiValueSum": countAsciiValues,
     "textLength": len,
     "lexicalDiversity": lexicalDiversityLemmatizedNostop,
-    "totalWorCount": total_word_count,
+    "totalWordCount": total_word_count,
     "count_chars": count_chars_ignore_whitespace,
+    "average_word_length": average_word_length,
+    "max_word_length": max_word_length,
 }
 
 def main():
