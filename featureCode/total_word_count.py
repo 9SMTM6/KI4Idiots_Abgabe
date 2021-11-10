@@ -24,9 +24,12 @@ def average_word_length(input: str):
     length_sum=0
     token_count=0
     for t in tokens_cleaned:
-        length_sum+=len(t)
-        token_count+=1
-    return length_sum/token_count
+        length_sum=length_sum+len(t)
+        token_count=token_count+1
+    avg=0
+    if(token_count!=0):
+        avg=length_sum/token_count
+    return avg
 
 def max_word_length(input: str):
     tokens_cleaned=clean_up_punctuation(word_tokenize(input))
@@ -34,5 +37,6 @@ def max_word_length(input: str):
     for t in tokens_cleaned:
         l=len(t)
         if(l>max_length):
-            l=max_length
+            max_length=l
     return max_length
+
