@@ -1,13 +1,7 @@
 from datasetSplit import RandomSplit
 from exampleFeatures import getLength, countAsciiValues
 from featureApplication import applyFeatures, JsonData
-from featureCode.lexical_diversity import lexicalDiversityLemmatizedNostop
-from featureCode.specificWordCount import countWordsOfList
-from featureCode.total_word_count import total_word_count
-from featureCode.count_chars import count_chars_ignore_whitespace
-from featureCode.total_word_count import average_word_length
-from featureCode.total_word_count import max_word_length
-
+from featureCode import *
 
 #import wordlist
 wordList=[]
