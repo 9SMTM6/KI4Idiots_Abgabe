@@ -9,17 +9,6 @@ with open("wordList.txt") as words:
     for line in words:
         wordList.append(line.removesuffix("\n"))
 
-appliedFeatures = {
-    **countWordsOfList(wordList),
-    "textLength": len,
-    "asciiValueSum": countAsciiValues,
-    "lexicalDiversity": lexicalDiversityStemmedNostop,
-    "totalWordCount": total_word_count,
-    "count_chars": count_chars_ignore_whitespace,
-    "average_word_length": average_word_length,
-    "max_word_length": max_word_length,
-}
-
 def main():
     name = "20newsgroups"
     RandomSplit(
@@ -27,6 +16,26 @@ def main():
         seed = countAsciiValues("KI4Idiots"),
         partForTrainAndCompare = 0.2,
     ).saveToFiles(name)
+    
+    data = JsonData("./20newsgroups_train")
+    distributions = wordDistributionsById(data)
+
+    appliedFeatures = {
+        **relativeWordDensityFor(getWordsOf(
+            rankWith(
+                distributions,
+                lambda word, dist, commonDist: dist[word] / commonDist[word] * log(dist[word]) / log(dist.N()),
+            ),
+            rankToByCat=40,
+        )),
+        "textLength": len,
+        "asciiValueSum": countAsciiValues,
+        "lexicalDiversity": lexicalDiversityStemmedNostop,
+        "totalWordCount": total_word_count,
+        "count_chars": count_chars_ignore_whitespace,
+        "average_word_length": average_word_length,
+        "max_word_length": max_word_length,
+    }
     for version in ["train", "compare", "validate"]:
         # You can pass arguments by name
         jsonData = JsonData(input_name = f"{name}_{version}")
