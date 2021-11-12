@@ -2,6 +2,7 @@ from datasetSplit import RandomSplit
 from exampleFeatures import getLength, countAsciiValues
 from featureApplication import applyFeatures, JsonData
 from featureCode import *
+from math import log
 
 #import wordlist
 wordList=[]
