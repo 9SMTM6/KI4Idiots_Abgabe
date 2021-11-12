@@ -16,7 +16,7 @@ def main():
 
     wordsv1 = getWordsOf(
         rankWith(
-            distributions, 
+            distributions,
             lambda word, dist, commonDist: dist[word] / commonDist[word] * log(dist[word]) / log(dist.N()),
         ),
         rankToByCat=40,
