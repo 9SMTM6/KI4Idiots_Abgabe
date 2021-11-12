@@ -30,9 +30,11 @@ class JsonData:
         # sparse and weight hold no value, theyre constantly false, 1.0, so we skip them
         data: list[dict] = [entry["values"] for entry in self.jsonRepr["data"]]
         self.blogEntries: list[str] = []
+        self.blogEntriesById = {str(group): [] for group in range(4)}
         # self.ids: list[str] = []
         # self.groups: list[str] = []
         for id, blogEntry, group in data:
+            self.blogEntriesById[group].append(blogEntry)
             # self.ids.append(id)
             self.blogEntries.append(blogEntry)
             # self.groups.append(group)
