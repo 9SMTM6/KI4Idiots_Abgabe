@@ -6,6 +6,7 @@ import sys
 sys.path.append("C:/Users/smaier/Documents/Workspace/ki/KI4Idiots_Abgabe")
 
 from featureApplication import *
+from nltk.corpus import stopwords
 
 def main():
     data = JsonData("./20newsgroups_train")
@@ -31,9 +32,14 @@ def tagAndExclude(input: list[str]):
     wordtokens: list[tuple[str, str]] = nltk.pos_tag(input, tagset = 'universal')
     return [word for (word, tag) in wordtokens if tag in whiteList]
 
-def wordDistributionsById(data) -> list[nltk.FreqDist]:
+stopwords: list[str] = stopwords.words("english")
+
+def removeStopWords(input: list[str]):
+    return [word for word in input if word not in stopwords]
+
+def wordDistributionsById(data: JsonData) -> list[nltk.FreqDist]:
     return [
-        nltk.FreqDist(tagAndExclude(tokenizeAndCombine(data.blogEntriesById[str(id)])))
+        nltk.FreqDist(tagAndExclude(removeStopWords(tokenizeAndCombine(data.blogEntriesById[str(id)]))))
         for id in range(4)
     ]
 

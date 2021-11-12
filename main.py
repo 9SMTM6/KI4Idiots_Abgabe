@@ -9,13 +9,11 @@ with open("wordList.txt") as words:
     for line in words:
         wordList.append(line.removesuffix("\n"))
 
-
 appliedFeatures = {
     **countWordsOfList(wordList),
-    "textLenght": getLength,
-    "asciiValueSum": countAsciiValues,
     "textLength": len,
-    "lexicalDiversity": lexicalDiversityLemmatizedNostop,
+    "asciiValueSum": countAsciiValues,
+    "lexicalDiversity": lexicalDiversityStemmedNostop,
     "totalWordCount": total_word_count,
     "count_chars": count_chars_ignore_whitespace,
     "average_word_length": average_word_length,
