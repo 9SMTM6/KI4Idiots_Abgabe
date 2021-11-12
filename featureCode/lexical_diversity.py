@@ -20,7 +20,7 @@ def extract_tag(tag):
     #the second parameter is an "optional" in case of missing key in the dictionary 
     return tag_dict.get(tag[0].upper(), None)
 
-def lemmatize_word(token: str):   
+def lemmatize_word(token: str):
     "extract tag and lemmatize word"
     word=token[0]
     tag=extract_tag(token[1])

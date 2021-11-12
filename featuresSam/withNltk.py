@@ -1,8 +1,10 @@
-from typing import Optional
+from typing import Callable, Optional
 from math import log
 import nltk
 
 import sys
+
+from nltk.probability import FreqDist
 sys.path.append("C:/Users/smaier/Documents/Workspace/ki/KI4Idiots_Abgabe")
 
 from featureApplication import *
@@ -12,7 +14,13 @@ def main():
     data = JsonData("./20newsgroups_train")
     distributions = wordDistributionsById(data)
 
-    wordsv1 = getWordsOf(rankVersion1(distributions), rankToByCat=30)
+    wordsv1 = getWordsOf(
+        rankWith(
+            distributions, 
+            lambda word, dist, commonDist: dist[word] / commonDist[word] * log(dist[word]) / log(dist.N()),
+        ),
+        rankToByCat=40,
+    )
 
     print(wordsv1)
 
@@ -43,15 +51,15 @@ def wordDistributionsById(data: JsonData) -> list[nltk.FreqDist]:
         for id in range(4)
     ]
 
-def rankVersion1(distributions: list[nltk.FreqDist]):
-    """V1 of the ranking, per category"""
+def rankWith(distributions: list[nltk.FreqDist], rankFn: Callable[[str, FreqDist, FreqDist], float]):
+    """Ranks the provided ditributions using the rankFn. rankFn takes the word to rank, and 2 FreqDist, (source of the word, a combined one)"""
     commondist = nltk.FreqDist(list(distributions[0].elements()) + list(distributions[1].elements()) + list(distributions[2].elements()) + list(distributions[3].elements()))
     distsWithRank: list[list[tuple[str, float]]] = []
     for id in range(4):
         dist = distributions[id]
         distsWithRank.append([])
         for word in dist.keys():
-            distsWithRank[id].append((word, dist[word] / commondist[word] * log(dist[word]) / log(dist.N()), dist[word])) #dist[word] / commondist[word] * log(dist[word]) / log(dist.N())
+            distsWithRank[id].append((word, rankFn(word, dist, commondist), dist[word])) #dist[word] / commondist[word] * log(dist[word]) / log(dist.N())
     sortedSelectedDists = [sorted(dist, key=lambda a: a[1], reverse= True) for dist in distsWithRank]
     return sortedSelectedDists
 
