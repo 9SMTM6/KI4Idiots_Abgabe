@@ -47,15 +47,25 @@ class JsonData:
         # called self instead of this, in the parameter list.
 
         # A static method simply doesnt have a self parameter.
-        for key, data in additionalData.items():
-            self.jsonRepr["header"]["attributes"].append({
-                "name": key,
+        attributesHeader: list = self.jsonRepr["header"]["attributes"]
+        groupHeader = removeIdTextAndCutGroup(attributesHeader)
+        for featureName, _ in additionalData.items():
+            attributesHeader.append({
+                "name": featureName,
                 "type": "numeric",
                 "class": False,
                 "weight": 1.0,
             })
-            for idx, entry in enumerate(data):
-                self.jsonRepr["data"][idx]["values"].append(entry)
+        blogEntryValues: list = self.jsonRepr["data"]
+        for idx, blog in enumerate(blogEntryValues):
+            blogValues:list = blog["values"]
+            group = removeIdTextAndCutGroup(blogValues)
+            for _, featureValues in additionalData.items():
+                # need to convert to string because weka doesnt like the value 0.0 as float
+                blogValues.append(str(featureValues[idx]))
+            blogValues.append(group)
+        attributesHeader.append(groupHeader)
+        
         return self
 
     def saveToFile(self, specificOutputPath = None):
@@ -66,3 +76,9 @@ class JsonData:
 
         with open(specificOutputPath, "w") as filePointer:
             json.dump(self.jsonRepr, filePointer, indent=4)
+
+def removeIdTextAndCutGroup(input: list):
+    group = input.pop()
+    input.pop()
+    input.pop()
+    return group

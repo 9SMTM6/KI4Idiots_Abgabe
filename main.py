@@ -1,3 +1,4 @@
+from collections import namedtuple
 from datasetSplit import RandomSplit
 from exampleFeatures import getLength, countAsciiValues
 from featureApplication import applyFeatures, JsonData
@@ -11,11 +12,18 @@ with open("wordList.txt") as words:
         wordList.append(line.removesuffix("\n"))
 
 def main():
+    
+    # print(count_chars_ignore_whitespace.__code__.co_code)
+
+    # exit(0)
+    
     name = "20newsgroups"
+    random_seed =  countAsciiValues("KI4Idiots")
+    random_split = 0.2
     RandomSplit(
         name,
-        seed = countAsciiValues("KI4Idiots"),
-        partForTrainAndCompare = 0.2,
+        seed = random_seed,
+        partForTrainAndCompare = random_split,
     ).saveToFiles(name)
     
     data = JsonData("./20newsgroups_train")
@@ -37,17 +45,22 @@ def main():
         "max_word_length": max_word_length,
         "avg_sent_length": avg_sentence_length,
     }
-    for version in ["train", "compare", "validate"]:
-        # You can pass arguments by name
-        jsonData = JsonData(input_name = f"{name}_{version}")
-        jsonData\
-            .addData(
-                applyFeatures(
-                    appliedFeatures,
-                    jsonData.blogEntries
-                )
-            )\
-            .saveToFile()
+    # You can pass arguments by name
+    jsonData = JsonData(input_name = name)
+    jsonData\
+        .addData(
+            applyFeatures(
+                appliedFeatures,
+                jsonData.blogEntries
+            )
+        )\
+        .saveToFile()
+    processed_name = f"{name}_processed"
+    RandomSplit(
+        processed_name,
+        seed = random_seed,
+        partForTrainAndCompare = random_split,
+    ).saveToFiles(processed_name)
 
 # Das ist ein wenig nerfig bei python, wenn man von einem anderen file importiert
 #  wird alles in dem file ausgeführt.

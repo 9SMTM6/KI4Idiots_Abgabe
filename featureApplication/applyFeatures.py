@@ -10,7 +10,7 @@ FeatureType = Callable[[str], float]
 
 def applyFeature(feature: FeatureType, blogEntries: Iterable[str]) -> list[float]:
     # this is using list comprehension, in other languages, eg JS, Array.map fulfills the same role
-    return [str(feature(blog)) for blog in blogEntries]
+    return [feature(blog) for blog in blogEntries]
 
 def applyFeatures(features: dict[str, FeatureType], blogEntries: Iterable[str]) -> dict[str, list[str]]:
     """
