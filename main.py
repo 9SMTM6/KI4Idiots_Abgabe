@@ -36,6 +36,7 @@ def main():
         "count_chars": count_chars_ignore_whitespace,
         "average_word_length": average_word_length,
         "max_word_length": max_word_length,
+        "avg_sent_length": avg_sentence_length,
     }
     for version in ["train", "compare", "validate"]:
         # You can pass arguments by name
