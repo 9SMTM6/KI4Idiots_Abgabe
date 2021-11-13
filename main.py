@@ -1,4 +1,5 @@
 from collections import namedtuple
+from types import FunctionType
 from datasetSplit import RandomSplit
 from exampleFeatures import getLength, countAsciiValues
 from featureApplication import applyFeatures, JsonData
@@ -11,12 +12,12 @@ with open("wordList.txt") as words:
     for line in words:
         wordList.append(line.removesuffix("\n"))
 
-def main():
-    
-    # print(count_chars_ignore_whitespace.__code__.co_code)
+# def cache(func: FunctionType):
+#     func.__code__.co_code
+#     print(func.__module__)
+#     pass
 
-    # exit(0)
-    
+def main():
     name = "20newsgroups"
     random_seed =  countAsciiValues("KI4Idiots")
     random_split = 0.2
@@ -35,7 +36,7 @@ def main():
                 distributions,
                 lambda word, dist, commonDist: dist[word] / commonDist[word] * log(dist[word]) / log(dist.N()),
             ),
-            rankToByCat=40,
+            takeToByCat=40,
         )),
         "countCharsWWhitespace": len,
         "lexicalDiversity": lexicalDiversityStemmedNostop,

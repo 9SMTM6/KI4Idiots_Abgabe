@@ -19,7 +19,7 @@ def main():
             distributions,
             lambda word, dist, commonDist: dist[word] / commonDist[word] * log(dist[word]) / log(dist.N()),
         ),
-        rankToByCat=40,
+        takeToByCat=40,
     )
 
     print(wordsv1)
@@ -63,14 +63,14 @@ def rankWith(distributions: list[nltk.FreqDist], rankFn: Callable[[str, FreqDist
     sortedSelectedDists = [sorted(dist, key=lambda a: a[1], reverse= True) for dist in distsWithRank]
     return sortedSelectedDists
 
-def getWordsOf(input: list[list[tuple[str, float]]], cutoff: Optional[float] = None, rankToByCat: int = -1, rankTotal: int = -1):
+def getWordsOf(input: list[list[tuple[str, float]]], cutoff: Optional[float] = None, takeToByCat: int = -1, takeTotal: int = -1):
     outputByCat: list[list[str]] = []
     for dist in input:
-        outputByCat.append([word for (word, val,_) in dist if (cutoff is None or val>cutoff)][:rankToByCat])
+        outputByCat.append([word for (word, val,_) in dist if (cutoff is None or val>cutoff)][:takeToByCat])
     output: list[str] = []
     for out in outputByCat:
         output += out
-    return output
+    return output[:takeTotal]
 
 if __name__ == "__main__":
     main()
