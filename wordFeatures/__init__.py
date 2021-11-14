@@ -1,2 +1,2 @@
-from .wordFeatures import relativeWordDensityFor, wordPresenceFor
-from .wordListsGenerators import rankWith, getWordsOf, wordDistributionsByIdAndCommonDist
+from .wordFeatures import relativeWordDensityFor, wordPresenceFor, relativeWordDensityRegexMatchFor
+from .wordListsGenerators import rankWith, getWordsOf, wordDistributionsByIdAndCommonDist, stemmedWordDistributionsByIdAndCommonDist

@@ -55,6 +55,17 @@ def wordDistributionsByIdAndCommonDist(data: JsonData) -> tuple[list[FreqDist], 
         FreqDist(list(distributions[0].elements()) + list(distributions[1].elements()) + list(distributions[2].elements()) + list(distributions[3].elements()))    
     )
 
+def stemmedWordDistributionsByIdAndCommonDist(data: JsonData) -> tuple[list[FreqDist], FreqDist]:
+    stemmer = nltk.PorterStemmer()
+    distributions = [
+        FreqDist(stemmer.stem(token) for token in tagAndExclude(removeStopWords(tokenizeAndCombine(data.blogEntriesById[str(id)]))))
+        for id in range(4)
+    ]
+    return (
+        distributions,
+        FreqDist(list(distributions[0].elements()) + list(distributions[1].elements()) + list(distributions[2].elements()) + list(distributions[3].elements()))    
+    )
+
 def rankWith(distributionsAndCommon: tuple[list[FreqDist], FreqDist], rankFn: Callable[[str, FreqDist, FreqDist], float]):
     """Ranks the provided ditributions using the rankFn. rankFn takes the word to rank, and 2 FreqDist, (source of the word, a combined one)"""
     (distributions, commondist) = distributionsAndCommon

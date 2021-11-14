@@ -41,7 +41,27 @@ def main():
         "samuelsNaiveSelection": [
             *relativeWordDensityFor(getWordsOf(
                 rankings["relativeWordCountAndPrevalenceMagnitude"],
-                takeToByCat=400
+                takeToByCat=40
+            )),
+            f.lexicalDiversityLemmatizedNostop,
+            f.max_word_length,
+            f.average_word_length,
+            f.avg_sentence_length,
+        ],
+        "samuelsNaiveSelectionTrial": [
+            *relativeWordDensityFor(getWordsOf(
+                rankings["relativeWordCountAndPrevalenceTrial"],
+                takeToByCat=40
+            )),
+            f.lexicalDiversityLemmatizedNostop,
+            f.max_word_length,
+            f.average_word_length,
+            f.avg_sentence_length,
+        ],
+        "samuelsSelection": [
+            *relativeWordDensityRegexMatchFor(getWordsOf(
+                rankings["relativeStemmedWordCountAndPrevalenceMagnitude"],
+                takeToByCat=40
             )),
             f.lexicalDiversityLemmatizedNostop,
             f.max_word_length,
@@ -96,9 +116,9 @@ def getWordListRankings() -> dict[str, list[list[tuple[str, float]]]]:
     return rankings
 
 def calcWordListRankings(data: JsonData):
-    distributionsAndCommon = wordDistributionsByIdAndCommonDist(data)
-
     rankings: dict[str, list[list[tuple[str, float]]]] = {}
+
+    distributionsAndCommon = wordDistributionsByIdAndCommonDist(data)
 
     rankings["wordCount"] = rankWith(
         distributionsAndCommon,
@@ -117,6 +137,18 @@ def calcWordListRankings(data: JsonData):
 
     rankings["relativeWordCountAndPrevalenceMagnitude"] = rankWith(
         distributionsAndCommon,
+        lambda word, dist, commonDist: dist[word] / commonDist[word] * log(dist[word]) / log(dist.N()),
+    )
+    
+    rankings["relativeWordCountAndPrevalenceTrial"] = rankWith(
+        distributionsAndCommon,
+        lambda word, dist, commonDist: dist[word] / commonDist[word] * log(dist[word]/dist.N()),
+    )
+
+    stemmedDistributionsAndCommon = stemmedWordDistributionsByIdAndCommonDist(data)
+
+    rankings["relativeStemmedWordCountAndPrevalenceMagnitude"] = rankWith(
+        stemmedDistributionsAndCommon,
         lambda word, dist, commonDist: dist[word] / commonDist[word] * log(dist[word]) / log(dist.N()),
     )
 

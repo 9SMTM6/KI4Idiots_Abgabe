@@ -25,3 +25,12 @@ def wordPresenceFor(words: list[str]):
         whatever.__name__ = featureName
         return whatever
     return [presence(word) for word in words]
+
+def relativeWordDensityRegexMatchFor(words: list[str]):
+    def relativeDensity(word: str):
+        featureName = f"{word}CountDensityRegex"
+        def whatever(blog: str):
+            return len(re.findall(re.escape(word), blog, re.IGNORECASE)) / (len(blog) / len(word))
+        whatever.__name__ = featureName
+        return whatever
+    return [relativeDensity(word) for word in words]
