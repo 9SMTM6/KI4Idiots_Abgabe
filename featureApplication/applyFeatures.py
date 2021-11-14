@@ -18,7 +18,7 @@ def applyFeature(feature: FeatureType, blogEntries: Iterable[str]) -> list[float
     # this is using list comprehension, in other languages, eg JS, Array.map fulfills the same role
     return [feature(blog) for blog in blogEntries]
 
-def applyFeatures(features: dict[str, FeatureType], blogEntries: Iterable[str]) -> dict[str, list[str]]:
+def applyFeatures(features: list[FeatureType], blogEntries: Iterable[str]) -> dict[str, list[str]]:
     """
     The features are to be passed in a list,
     The name of the function will serve as feature-name, the return value of the feature value
@@ -38,7 +38,7 @@ def applyFeatures(features: dict[str, FeatureType], blogEntries: Iterable[str]) 
     for feature in features:
         featureName = feature.__name__
         featureCode = feature.__code__.co_code
-        if featureResults.get(featureName) is None or featureResults[featureName].code != featureCode:
+        if (featureResults.get(featureName) is None) or (featureResults[featureName].code != featureCode):
             print(f"Recalculating {featureName}")
             featureResults[featureName] = CachedFeatureDetails(featureName, featureCode, applyFeature(feature, blogEntries))
         else:
@@ -47,4 +47,4 @@ def applyFeatures(features: dict[str, FeatureType], blogEntries: Iterable[str]) 
     with open(cacheFilename, "bw") as file:
         pickle.dump((featureResults, blogEntries), file)
     
-    return {feature.name: feature.returnValue for (_, feature) in featureResults.items()}
+    return {feature.__name__: featureResults[feature.__name__].returnValue for feature in features}

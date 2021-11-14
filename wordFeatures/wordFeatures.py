@@ -18,7 +18,10 @@ def wordPresenceFor(words: list[str]):
     def presence(word: str):
         featureName = f"{word}Presence"
         def whatever(blog: str):
-            return re.match(f" {word} ", blog, re.IGNORECASE)
+            if re.search(f" {word} ", blog, re.IGNORECASE) is not None:
+                return 1
+            else:
+                return 0
         whatever.__name__ = featureName
         return whatever
     return [presence(word) for word in words]
