@@ -45,12 +45,12 @@ def main():
 
 def getWordListRankings() -> dict[str, list[list[tuple[str, float]]]]:
     cacheFileName = "wordCountLists.pickle"
-    with open(cacheFileName, "br") as file:
-        cached = pickle.load(file)
 
     calcFnCode = calcWordListRankings.__code__.co_code
 
     try:
+        with open(cacheFileName, "br") as file:
+            cached = pickle.load(file)
         if cached[0] != calcFnCode:
             raise "whatever"
         rankings = cached[1]
