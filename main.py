@@ -38,7 +38,7 @@ def main():
                 takeToByCat=70,
             )),
         ],
-        "samuelsNaiveSelection": [
+        "samuelsSelectionNaiveLog40": [
             *relativeWordDensityFor(getWordsOf(
                 rankings["relativeWordCountAndPrevalenceMagnitude"],
                 takeToByCat=40
@@ -48,9 +48,9 @@ def main():
             f.average_word_length,
             f.avg_sentence_length,
         ],
-        "samuelsNaiveSelectionTrial": [
-            *relativeWordDensityFor(getWordsOf(
-                rankings["relativeWordCountAndPrevalenceTrial"],
+        "samuelsSelectionStemmedRegex40": [
+            *relativeWordDensityRegexMatchFor(getWordsOf(
+                rankings["relativeStemmedWordCountAndPrevalenceMagnitude"],
                 takeToByCat=40
             )),
             f.lexicalDiversityLemmatizedNostop,
@@ -58,9 +58,29 @@ def main():
             f.average_word_length,
             f.avg_sentence_length,
         ],
-        "samuelsSelection": [
+        "samuelsSelectionNaiveLog400": [
+            *relativeWordDensityFor(getWordsOf(
+                rankings["relativeWordCountAndPrevalenceMagnitude"],
+                takeToByCat=400
+            )),
+            f.lexicalDiversityLemmatizedNostop,
+            f.max_word_length,
+            f.average_word_length,
+            f.avg_sentence_length,
+        ],
+        "samuelsSelectionStemmedRegex400": [
             *relativeWordDensityRegexMatchFor(getWordsOf(
                 rankings["relativeStemmedWordCountAndPrevalenceMagnitude"],
+                takeToByCat=400
+            )),
+            f.lexicalDiversityLemmatizedNostop,
+            f.max_word_length,
+            f.average_word_length,
+            f.avg_sentence_length,
+        ],
+        "samuelsSelectionTrial": [
+            *relativeWordDensityFor(getWordsOf(
+                rankings["relativeWordCountAndPrevalenceTrial"],
                 takeToByCat=40
             )),
             f.lexicalDiversityLemmatizedNostop,
