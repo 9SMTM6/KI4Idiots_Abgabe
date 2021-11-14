@@ -25,7 +25,7 @@ def applyFeatures(features: list[FeatureType], blogEntries: Iterable[str]) -> di
     The name of the function will serve as feature-name, the return value of the feature value
     """
     cacheFilename = "featureCache.pickle"
-    try: 
+    try:
         with open(cacheFilename, "br") as file:
             cache = pickle.load(file)
             featureResults: dict[str, CachedFeatureDetails] = cache[0]
@@ -36,6 +36,8 @@ def applyFeatures(features: list[FeatureType], blogEntries: Iterable[str]) -> di
         featureResults = {}
 
     lastCheckpoint = time()
+
+    print("----------- start calcs ----------")
 
     # Calculate any features that were not cached, or whos functions changed in the meantime
     for feature in features:
@@ -49,10 +51,12 @@ def applyFeatures(features: list[FeatureType], blogEntries: Iterable[str]) -> di
         now = time()
         # checkpoint every N seconds
         if (now - lastCheckpoint) > 20:
-            print("checkpointing")
+            print("--------- checkpointing ------------")
             with open(cacheFilename, "bw") as file:
                 pickle.dump((featureResults, blogEntries), file)
             lastCheckpoint = now
+
+    print("----------- finished calcs --------------")
 
     with open(cacheFilename, "bw") as file:
         pickle.dump((featureResults, blogEntries), file)
