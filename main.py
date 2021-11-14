@@ -1,51 +1,31 @@
-from collections import namedtuple
+import pickle
 from types import FunctionType
 from datasetSplit import RandomSplit
-from exampleFeatures import getLength, countAsciiValues
+from exampleFeatures import countAsciiValues
 from featureApplication import applyFeatures, JsonData
 from featureCode import *
 from math import log
 
-#import wordlist
-wordList=[]
-with open("wordList.txt") as words:
-    for line in words:
-        wordList.append(line.removesuffix("\n"))
-
-# def cache(func: FunctionType):
-#     func.__code__.co_code
-#     print(func.__module__)
-#     pass
+name = "20newsgroups"
+random_seed =  countAsciiValues("KI4Idiots")
+random_split = 0.2
 
 def main():
-    name = "20newsgroups"
-    random_seed =  countAsciiValues("KI4Idiots")
-    random_split = 0.2
-    RandomSplit(
-        name,
-        seed = random_seed,
-        partForTrainAndCompare = random_split,
-    ).saveToFiles(name)
-    
-    data = JsonData("./20newsgroups_train")
-    distributions = wordDistributionsById(data)
+    rankings = getWordListRankings()
 
-    appliedFeatures = {
-        **relativeWordDensityFor(getWordsOf(
-            rankWith(
-                distributions,
-                lambda word, dist, commonDist: dist[word] / commonDist[word] * log(dist[word]) / log(dist.N()),
-            ),
+    appliedFeatures = [
+        *relativeWordDensityFor(getWordsOf(
+            rankings["relativeWordCountAndPrevalenceMagnitude"],
             takeToByCat=40,
         )),
-        "countCharsWWhitespace": len,
-        "lexicalDiversity": lexicalDiversityStemmedNostop,
-        "totalWordCount": total_word_count,
-        "count_chars": count_chars_ignore_whitespace,
-        "average_word_length": average_word_length,
-        "max_word_length": max_word_length,
-        "avg_sent_length": avg_sentence_length,
-    }
+        count_chars_with_whitespace,
+        lexicalDiversityStemmedNostop,
+        total_word_count,
+        count_chars_ignore_whitespace,
+        average_word_length,
+        max_word_length,
+        avg_sentence_length,
+    ]
     # You can pass arguments by name
     jsonData = JsonData(input_name = name)
     jsonData\
@@ -62,6 +42,61 @@ def main():
         seed = random_seed,
         partForTrainAndCompare = random_split,
     ).saveToFiles(processed_name)
+
+def getWordListRankings() -> dict[str, list[list[tuple[str, float]]]]:
+    cacheFileName = "wordCountLists.pickle"
+    with open(cacheFileName, "br") as file:
+        cached = pickle.load(file)
+
+    calcFnCode = calcWordListRankings.__code__.co_code
+
+    try:
+        if cached[0] != calcFnCode:
+            raise "whatever"
+        rankings = cached[1]
+        print("Using wordlists from cache")
+    except:
+        rankings = calcWordListRankings()
+        print("Recalculating wordlists")
+
+    with open(cacheFileName, "bw") as file:
+        pickle.dump((calcFnCode, rankings), file)
+    return rankings
+
+def calcWordListRankings():
+    RandomSplit(
+        name,
+        seed = random_seed,
+        partForTrainAndCompare = random_split,
+    ).saveToFiles(name)
+    
+    data = JsonData("./20newsgroups_train")
+    distributionsAndCommon = wordDistributionsByIdAndCommonDist(data)
+
+    rankings: dict[str, list[list[tuple[str, float]]]] = {}
+
+    rankings["wordCount"] = rankWith(
+        distributionsAndCommon,
+        lambda word, dist, _: dist[word],
+    )
+
+    rankings["relativeWordCount"] = rankWith(
+        distributionsAndCommon,
+        lambda word, dist, commonDist: dist[word] / commonDist[word],
+    )
+
+    rankings["relativeWordCountAndPrevalence"] = rankWith(
+        distributionsAndCommon,
+        lambda word, dist, commonDist: dist[word] / commonDist[word] * dist[word] / dist.N(),
+    )
+
+    rankings["relativeWordCountAndPrevalenceMagnitude"] = rankWith(
+        distributionsAndCommon,
+        lambda word, dist, commonDist: dist[word] / commonDist[word] * log(dist[word]) / log(dist.N()),
+    )
+
+    return rankings
+
 
 # Das ist ein wenig nerfig bei python, wenn man von einem anderen file importiert
 #  wird alles in dem file ausgeführt.

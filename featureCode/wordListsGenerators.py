@@ -12,7 +12,7 @@ from nltk.corpus import stopwords
 
 def main():
     data = JsonData("./20newsgroups_train")
-    distributions = wordDistributionsById(data)
+    distributions = wordDistributionsByIdAndCommonDist(data)
 
     wordsv1 = getWordsOf(
         rankWith(
@@ -45,32 +45,36 @@ stopwords: list[str] = stopwords.words("english")
 def removeStopWords(input: list[str]):
     return [word for word in input if word not in stopwords]
 
-def wordDistributionsById(data: JsonData) -> list[nltk.FreqDist]:
-    return [
-        nltk.FreqDist(tagAndExclude(removeStopWords(tokenizeAndCombine(data.blogEntriesById[str(id)]))))
+def wordDistributionsByIdAndCommonDist(data: JsonData) -> tuple[list[FreqDist], FreqDist]:
+    distributions = [
+        FreqDist(tagAndExclude(removeStopWords(tokenizeAndCombine(data.blogEntriesById[str(id)]))))
         for id in range(4)
     ]
+    return (
+        distributions,
+        FreqDist(list(distributions[0].elements()) + list(distributions[1].elements()) + list(distributions[2].elements()) + list(distributions[3].elements()))    
+    )
 
-def rankWith(distributions: list[nltk.FreqDist], rankFn: Callable[[str, FreqDist, FreqDist], float]):
+def rankWith(distributionsAndCommon: tuple[list[FreqDist], FreqDist], rankFn: Callable[[str, FreqDist, FreqDist], float]):
     """Ranks the provided ditributions using the rankFn. rankFn takes the word to rank, and 2 FreqDist, (source of the word, a combined one)"""
-    commondist = nltk.FreqDist(list(distributions[0].elements()) + list(distributions[1].elements()) + list(distributions[2].elements()) + list(distributions[3].elements()))
+    (distributions, commondist) = distributionsAndCommon
     distsWithRank: list[list[tuple[str, float]]] = []
     for id in range(4):
         dist = distributions[id]
         distsWithRank.append([])
         for word in dist.keys():
-            distsWithRank[id].append((word, rankFn(word, dist, commondist), dist[word])) #dist[word] / commondist[word] * log(dist[word]) / log(dist.N())
-    sortedSelectedDists = [sorted(dist, key=lambda a: a[1], reverse= True) for dist in distsWithRank]
-    return sortedSelectedDists
+            distsWithRank[id].append((word, rankFn(word, dist, commondist)))
+    sortedDists = [sorted(dist, key=lambda a: a[1], reverse= True) for dist in distsWithRank]
+    return sortedDists
 
-def getWordsOf(input: list[list[tuple[str, float]]], cutoff: Optional[float] = None, takeToByCat: int = -1, takeTotal: int = -1):
+def getWordsOf(input: list[list[tuple[str, float]]], cutoff: Optional[float] = None, takeToByCat: Optional[int] = None, takeTotal: Optional[int] = None):
     outputByCat: list[list[str]] = []
     for dist in input:
-        outputByCat.append([word for (word, val,_) in dist if (cutoff is None or val>cutoff)][:takeToByCat])
+        outputByCat.append([(word, val) for (word, val) in dist if (cutoff is None or val>cutoff)][:takeToByCat])
     output: list[str] = []
     for out in outputByCat:
         output += out
-    return output[:takeTotal]
+    return [word for (word, _) in sorted(output, key=lambda a: a[1], reverse= True)][:takeTotal]
 
 if __name__ == "__main__":
     main()

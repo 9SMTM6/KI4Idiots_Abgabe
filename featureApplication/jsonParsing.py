@@ -14,7 +14,7 @@ class JsonData:
 
     def __init__(
         self,
-        input_name:str = "20newsgroups",
+        input_name: str = "20newsgroups",
     ):
         # This is the constructor of classes in Python
         self.input_name = input_name

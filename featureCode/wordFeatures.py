@@ -6,15 +6,19 @@ import re
 
 def relativeWordDensityFor(words: list[str]):
     def relativeDensity(word: str):
+        featureName = f"{word}CountDensity"
         def whatever(blog: str):
             wordFreq = nltk.FreqDist(nltk.tokenize.wordpunct_tokenize(blog))
             return wordFreq[word] / wordFreq.N()
-        return whatever        
-    return {f"{word}CountDensity": relativeDensity(word) for word in words}
+        whatever.__name__ = featureName
+        return whatever
+    return [relativeDensity(word) for word in words]
 
 def wordPresence(words: list[str]):
     def presence(word: str):
+        featureName = f"{word}Presence"
         def whatever(blog: str):
             return re.match(f" {word} ", blog, re.IGNORECASE)
+        whatever.__name__ = featureName
         return whatever        
-    return {f"{word}CountDensity": presence(word) for word in words}
+    return {f"{word}Presence": presence(word) for word in words}
