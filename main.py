@@ -2,7 +2,7 @@ import pickle
 from datasetSplit import RandomSplit
 from exampleFeatures import countAsciiValues
 from featureApplication import applyFeatures, JsonData
-from featureCode import *
+from wordFeatures import *
 import featureCode as f
 from math import log
 
@@ -29,7 +29,7 @@ def main():
         "wordPresenceByCountAndPrevalence": [
             *wordPresenceFor(getWordsOf(
                 rankings["relativeWordCountAndPrevalenceMagnitude"],
-                takeToByCat=100
+                takeToByCat=100,
             )),
         ],
         "relativeWordCountByRelativeCount": [
@@ -81,20 +81,21 @@ def getWordListRankings() -> dict[str, list[list[tuple[str, float]]]]:
         print("Using wordlists from cache")
     except:
         print("Recalculating wordlists")
-        rankings = calcWordListRankings()
+        
+        RandomSplit(
+            name,
+            seed = random_seed,
+            partForTrainAndCompare = random_split,
+        ).saveToFiles(name)
+        
+        data = JsonData("./20newsgroups_train")
+        rankings = calcWordListRankings(data)
 
     with open(cacheFileName, "bw") as file:
         pickle.dump((calcFnCode, rankings), file)
     return rankings
 
-def calcWordListRankings():
-    RandomSplit(
-        name,
-        seed = random_seed,
-        partForTrainAndCompare = random_split,
-    ).saveToFiles(name)
-    
-    data = JsonData("./20newsgroups_train")
+def calcWordListRankings(data: JsonData):
     distributionsAndCommon = wordDistributionsByIdAndCommonDist(data)
 
     rankings: dict[str, list[list[tuple[str, float]]]] = {}
@@ -120,7 +121,6 @@ def calcWordListRankings():
     )
 
     return rankings
-
 
 # Das ist ein wenig nerfig bei python, wenn man von einem anderen file importiert
 #  wird alles in dem file ausgeführt.
