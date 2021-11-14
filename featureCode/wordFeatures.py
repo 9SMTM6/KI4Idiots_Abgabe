@@ -14,11 +14,11 @@ def relativeWordDensityFor(words: list[str]):
         return whatever
     return [relativeDensity(word) for word in words]
 
-def wordPresence(words: list[str]):
+def wordPresenceFor(words: list[str]):
     def presence(word: str):
         featureName = f"{word}Presence"
         def whatever(blog: str):
             return re.match(f" {word} ", blog, re.IGNORECASE)
         whatever.__name__ = featureName
-        return whatever        
-    return {f"{word}Presence": presence(word) for word in words}
+        return whatever
+    return [presence(word) for word in words]

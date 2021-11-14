@@ -1,9 +1,9 @@
 import pickle
-from types import FunctionType
 from datasetSplit import RandomSplit
 from exampleFeatures import countAsciiValues
 from featureApplication import applyFeatures, JsonData
 from featureCode import *
+import featureCode as f
 from math import log
 
 name = "20newsgroups"
@@ -13,35 +13,59 @@ random_split = 0.2
 def main():
     rankings = getWordListRankings()
 
-    appliedFeatures = [
-        *relativeWordDensityFor(getWordsOf(
-            rankings["relativeWordCountAndPrevalenceMagnitude"],
-            takeToByCat=40,
-        )),
-        count_chars_with_whitespace,
-        lexicalDiversityStemmedNostop,
-        total_word_count,
-        count_chars_ignore_whitespace,
-        average_word_length,
-        max_word_length,
-        avg_sentence_length,
-    ]
-    # You can pass arguments by name
-    jsonData = JsonData(input_name = name)
-    jsonData\
-        .addData(
-            applyFeatures(
-                appliedFeatures,
-                jsonData.blogEntries
-            )
-        )\
-        .saveToFile()
-    processed_name = f"{name}_processed"
-    RandomSplit(
-        processed_name,
-        seed = random_seed,
-        partForTrainAndCompare = random_split,
-    ).saveToFiles(processed_name)
+    appliedFeatureCombinations = {
+        "allSimpleFeatures": [
+            f.max_word_length,
+            f.average_word_length,
+            f.avg_sentence_length,
+            f.count_chars_ignore_whitespace,
+            f.count_chars_with_whitespace,
+            f.lexicalDiversity,
+            f.lexicalDiversityStemmed,
+            f.lexicalDiversityStemmedNostop,
+            f.lexicalDiversityLemmatized,
+            f.lexicalDiversityLemmatizedNostop,
+        ],
+        "wordPresenceByCountAndPrevalence": [
+            *wordPresenceFor(getWordsOf(
+                rankings["relativeWordCountAndPrevalenceMagnitude"],
+                takeToByCat=100
+            )),
+        ],
+        "relativeWordCountByRelativeCount": [
+            *relativeWordDensityFor(getWordsOf(
+                rankings["relativeWordCount"],
+                takeToByCat=70,
+            )),
+        ],
+        "samuelsNaiveSelection": [
+            *wordPresenceFor(getWordsOf(
+                rankings["relativeWordCountAndPrevalenceMagnitude"],
+                takeToByCat=100
+            )),
+            f.lexicalDiversityLemmatizedNostop,
+            f.max_word_length,
+            f.average_word_length,
+            f.avg_sentence_length,
+        ],
+    }
+    for key, featureList in appliedFeatureCombinations.items():
+        # You can pass arguments by name
+        jsonData = JsonData(input_name = name)
+        processed_name = f"{name}_{key}_processed"
+        jsonData\
+            .addData(
+                applyFeatures(
+                    featureList,
+                    jsonData.blogEntries
+                )
+            )\
+            .saveToFile(processed_name)
+        RandomSplit(
+            processed_name,
+            seed = random_seed,
+            partForTrainAndCompare = random_split,
+        ).saveToFiles(processed_name)
 
 def getWordListRankings() -> dict[str, list[list[tuple[str, float]]]]:
     cacheFileName = "wordCountLists.pickle"

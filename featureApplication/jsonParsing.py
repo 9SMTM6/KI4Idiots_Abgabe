@@ -72,9 +72,9 @@ class JsonData:
         """
         Save the internal representation to a json file
         """
-        specificOutputPath: str = specificOutputPath or f"{self.input_name}_processed.json"
+        specificOutputPath: str = specificOutputPath or f"{self.input_name}_processed"
 
-        with open(specificOutputPath, "w") as filePointer:
+        with open(f"{specificOutputPath}.json", "w") as filePointer:
             json.dump(self.jsonRepr, filePointer, indent=4)
 
 def removeIdTextAndCutGroup(input: list):
