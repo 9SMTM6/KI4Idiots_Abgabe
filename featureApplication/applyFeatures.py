@@ -3,7 +3,9 @@ These functions are meant to apply our features to the data in a generic way
 """
 
 import pickle
+from time import time
 from typing import Callable, Iterable, NamedTuple
+from timeit import timeit
 
 class CachedFeatureDetails(NamedTuple):
     name: str
@@ -34,6 +36,8 @@ def applyFeatures(features: list[FeatureType], blogEntries: Iterable[str]) -> di
     except:
         featureResults = {}
 
+    lastCheckpoint = timeit()
+
     # Calculate any features that were not cached, or whos functions changed in the meantime
     for feature in features:
         featureName = feature.__name__
@@ -43,7 +47,14 @@ def applyFeatures(features: list[FeatureType], blogEntries: Iterable[str]) -> di
             featureResults[featureName] = CachedFeatureDetails(featureName, featureCode, applyFeature(feature, blogEntries))
         else:
             print(f"Loaded {featureName} from cache")
-    
+        now = timeit()
+        # checkpoint every 60 seconds
+        if (now - lastCheckpoint) > 60:
+            print("checkpointing")
+            with open(cacheFilename, "bw") as file:
+                pickle.dump((featureResults, blogEntries), file)
+            lastCheckpoint = now
+
     with open(cacheFilename, "bw") as file:
         pickle.dump((featureResults, blogEntries), file)
     

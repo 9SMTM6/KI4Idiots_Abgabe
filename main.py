@@ -39,9 +39,9 @@ def main():
             )),
         ],
         "samuelsNaiveSelection": [
-            *wordPresenceFor(getWordsOf(
+            *relativeWordDensityFor(getWordsOf(
                 rankings["relativeWordCountAndPrevalenceMagnitude"],
-                takeToByCat=100
+                takeToByCat=400
             )),
             f.lexicalDiversityLemmatizedNostop,
             f.max_word_length,
