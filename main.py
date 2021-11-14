@@ -52,12 +52,12 @@ def main():
     for key, featureList in appliedFeatureCombinations.items():
         # You can pass arguments by name
         jsonData = JsonData(input_name = name)
-        processed_name = f"{name}_{key}_processed"
+        processed_name = f"output/{name}_{key}_processed"
         jsonData\
             .addData(
                 applyFeatures(
                     featureList,
-                    jsonData.blogEntries
+                    jsonData.blogEntries,
                 )
             )\
             .saveToFile(processed_name)
