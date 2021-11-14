@@ -56,8 +56,8 @@ def getWordListRankings() -> dict[str, list[list[tuple[str, float]]]]:
         rankings = cached[1]
         print("Using wordlists from cache")
     except:
-        rankings = calcWordListRankings()
         print("Recalculating wordlists")
+        rankings = calcWordListRankings()
 
     with open(cacheFileName, "bw") as file:
         pickle.dump((calcFnCode, rankings), file)
