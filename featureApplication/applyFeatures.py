@@ -48,8 +48,8 @@ def applyFeatures(features: list[FeatureType], blogEntries: Iterable[str]) -> di
         else:
             print(f"Loaded {featureName} from cache")
         now = timeit()
-        # checkpoint every 60 seconds
-        if (now - lastCheckpoint) > 60:
+        # checkpoint every N seconds
+        if (now - lastCheckpoint) > 20:
             print("checkpointing")
             with open(cacheFilename, "bw") as file:
                 pickle.dump((featureResults, blogEntries), file)
