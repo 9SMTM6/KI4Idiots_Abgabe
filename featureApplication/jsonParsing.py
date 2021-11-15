@@ -39,7 +39,7 @@ class JsonData:
             self.blogEntries.append(blogEntry)
             # self.groups.append(group)
 
-    def addData(self, additionalData: dict[str, list[float]]):
+    def addData(self, additionalData: dict[str, list[float]], keepText = False):
         """
         Add the passed data to the internal representation, in a format Weka can read
         """
@@ -48,7 +48,7 @@ class JsonData:
 
         # A static method simply doesnt have a self parameter.
         attributesHeader: list = self.jsonRepr["header"]["attributes"]
-        groupHeader = removeIdTextAndCutGroup(attributesHeader)
+        (groupHeader, attributesHeader) = removeIdTextAndCutGroup(attributesHeader, False)
         for featureName, _ in additionalData.items():
             attributesHeader.append({
                 "name": featureName,
@@ -59,13 +59,14 @@ class JsonData:
         blogEntryValues: list = self.jsonRepr["data"]
         for idx, blog in enumerate(blogEntryValues):
             blogValues:list = blog["values"]
-            group = removeIdTextAndCutGroup(blogValues)
+            (group, blogValues) = removeIdTextAndCutGroup(blogValues, keepText)
             for _, featureValues in additionalData.items():
                 # need to convert to string because weka doesnt like the value 0.0 as float
                 blogValues.append(str(featureValues[idx]))
             blogValues.append(group)
+            blog["values"] = blogValues
         attributesHeader.append(groupHeader)
-        
+        self.jsonRepr["header"]["attributes"] = attributesHeader
         return self
 
     def saveToFile(self, specificOutputPath = None):
@@ -77,8 +78,10 @@ class JsonData:
         with open(f"{specificOutputPath}.json", "w") as filePointer:
             json.dump(self.jsonRepr, filePointer, indent=4)
 
-def removeIdTextAndCutGroup(input: list):
-    group = input.pop()
-    input.pop()
-    input.pop()
-    return group
+def removeIdTextAndCutGroup(input: list, keepText: bool):
+    [group, id, text, *remainder] = input
+    if keepText:
+        output = [text, *remainder]
+    else:
+        output = remainder
+    return (group, output)

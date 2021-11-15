@@ -35,13 +35,13 @@ def main():
         "relativeWordCountByRelativeCount": [
             *relativeWordDensityFor(getWordsOf(
                 rankings["relativeWordCount"],
-                takeToByCat=70,
+                takeToByCat=40,
             )),
         ],
         "samuelsSelectionNaiveLog40": [
             *relativeWordDensityFor(getWordsOf(
                 rankings["relativeWordCountAndPrevalenceMagnitude"],
-                takeToByCat=40
+                takeToByCat=40,
             )),
             f.lexicalDiversityLemmatizedNostop,
             f.max_word_length,
@@ -51,27 +51,27 @@ def main():
         "samuelsSelectionStemmedRegex40": [
             *relativeWordDensityRegexMatchFor(getWordsOf(
                 rankings["relativeStemmedWordCountAndPrevalenceMagnitude"],
-                takeToByCat=40
+                takeToByCat=40,
             )),
             f.lexicalDiversityLemmatizedNostop,
             f.max_word_length,
             f.average_word_length,
             f.avg_sentence_length,
         ],
-        "samuelsSelectionNaiveLog400": [
-            *relativeWordDensityFor(getWordsOf(
-                rankings["relativeWordCountAndPrevalenceMagnitude"],
-                takeToByCat=400
-            )),
-            f.lexicalDiversityLemmatizedNostop,
-            f.max_word_length,
-            f.average_word_length,
-            f.avg_sentence_length,
-        ],
-        "samuelsSelectionStemmedRegex400": [
+        "samuelsSelectionStemmedRegex100": [
             *relativeWordDensityRegexMatchFor(getWordsOf(
                 rankings["relativeStemmedWordCountAndPrevalenceMagnitude"],
-                takeToByCat=400
+                takeToByCat=100,
+            )),
+            f.lexicalDiversityLemmatizedNostop,
+            f.max_word_length,
+            f.average_word_length,
+            f.avg_sentence_length,
+        ],
+        "samuelsSelectionStemmedRegexSingled100": [
+            *relativeWordDensityRegexMatchFor(getWordsOf(
+                rankings["relativeSingledStemmedWordPrevalenceMagintude"],
+                takeToByCat=100,
             )),
             f.lexicalDiversityLemmatizedNostop,
             f.max_word_length,
@@ -81,7 +81,7 @@ def main():
         "samuelsSelectionTrial": [
             *relativeWordDensityFor(getWordsOf(
                 rankings["relativeWordCountAndPrevalenceTrial"],
-                takeToByCat=40
+                takeToByCat=40,
             )),
             f.lexicalDiversityLemmatizedNostop,
             f.max_word_length,
@@ -92,20 +92,31 @@ def main():
     for key, featureList in appliedFeatureCombinations.items():
         # You can pass arguments by name
         jsonData = JsonData(input_name = name)
-        processed_name = f"output/{name}_{key}_processed"
+        processed_name = f"output/{key}_processed"
+        processed_name_with_text = f"output/withText/{key}_processed"
+        featureResults = applyFeatures(
+            featureList,
+            jsonData.blogEntries,
+        )
+
         jsonData\
-            .addData(
-                applyFeatures(
-                    featureList,
-                    jsonData.blogEntries,
-                )
-            )\
+            .addData(featureResults)\
             .saveToFile(processed_name)
         RandomSplit(
             processed_name,
             seed = random_seed,
             partForTrainAndCompare = random_split,
         ).saveToFiles(processed_name)
+
+        jsonData = JsonData(input_name = name)
+        jsonData\
+            .addData(featureResults, keepText = True)\
+            .saveToFile(processed_name_with_text)
+        RandomSplit(
+            processed_name_with_text,
+            seed = random_seed,
+            partForTrainAndCompare = random_split,
+        ).saveToFiles(processed_name_with_text)
 
 def getWordListRankings() -> dict[str, list[list[tuple[str, float]]]]:
     cacheFileName = "wordCountLists.pickle"
@@ -160,6 +171,16 @@ def calcWordListRankings(data: JsonData):
         lambda word, dist, commonDist: dist[word] / commonDist[word] * log(dist[word]) / log(dist.N()),
     )
     
+    rankings["relativeWordCountAndPrevalenceMagnitudeAndSingled"] = rankWith(
+        distributionsAndCommon,
+        lambda word, dist, commonDist: dist[word] / (commonDist[word] - dist[word] + 1) * log(dist[word]) / log(dist.N()),
+    )
+
+    rankings["relativeSingledWordPrevalenceMagintude"] = rankWith(
+        distributionsAndCommon,
+        lambda word, dist, commonDist: log(dist[word] + 2) / log(commonDist[word] - dist[word] + 2),
+    )
+    
     rankings["relativeWordCountAndPrevalenceTrial"] = rankWith(
         distributionsAndCommon,
         lambda word, dist, commonDist: dist[word] / commonDist[word] * log(dist[word]/dist.N()),
@@ -170,6 +191,16 @@ def calcWordListRankings(data: JsonData):
     rankings["relativeStemmedWordCountAndPrevalenceMagnitude"] = rankWith(
         stemmedDistributionsAndCommon,
         lambda word, dist, commonDist: dist[word] / commonDist[word] * log(dist[word]) / log(dist.N()),
+    )
+
+    rankings["relativeStemmedWordCountAndPrevalenceMagnitudeAndSingled"] = rankWith(
+        stemmedDistributionsAndCommon,
+        lambda word, dist, commonDist: dist[word] / (commonDist[word] - dist[word] + 1) * log(dist[word]) / log(dist.N()),
+    )
+    
+    rankings["relativeSingledStemmedWordPrevalenceMagintude"] = rankWith(
+        stemmedDistributionsAndCommon,
+        lambda word, dist, commonDist: log(dist[word] + 2) / log(commonDist[word] - dist[word] + 2),
     )
 
     return rankings

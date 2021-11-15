@@ -54,7 +54,7 @@ def applyFeatures(features: list[FeatureType], blogEntries: Iterable[str]) -> di
             print("------------------ checkpointing -----------------------")
             with open(cacheFilename, "bw") as file:
                 pickle.dump((featureResults, blogEntries), file)
-            lastCheckpoint = now
+            lastCheckpoint = time()
 
     print("------------------ finished calcs -----------------")
 
