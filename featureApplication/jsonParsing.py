@@ -79,7 +79,7 @@ class JsonData:
             json.dump(self.jsonRepr, filePointer, indent=4)
 
 def removeIdTextAndCutGroup(input: list, keepText: bool):
-    [group, id, text, *remainder] = input
+    [id, text, group, *remainder] = input
     if keepText:
         output = [text, *remainder]
     else:
