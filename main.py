@@ -35,7 +35,7 @@ def main():
         "relativeWordCountByRelativeCount": [
             *relativeWordDensityFor(getWordsOf(
                 rankings["relativeWordCount"],
-                takeToByCat=40,
+                takeToByCat=70,
             )),
         ],
         "samuelsSelectionNaiveLog40": [
