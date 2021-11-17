@@ -90,19 +90,16 @@ Skripts und Excel (\autoref{fig:wort_auswertung_excel}), Gemeinsamkeiten in Abh�
 herauszufinden. Anhand dieser Erkenntnisse formulierten wir erste Features. Hierbei waren hauptsächlich Mario
 und Jochen beteiligt.\\
 
-Anschließend entwickelte Samuel ein Python Skript, dass eine JSON-Datei einließt, Features berechnet und
-dann drei Dateien ausgibt, um in Weka weiter zu arbeiten. Bei der anschließenden Implementierung der Features war Luca
+Anschließend entwickelte Samuel ein Python Skript, dass eine JSON-Datei einliest, Features berechnet und
+dann drei Dateien ausgibt, um in Weka weiter zu arbeiten. Weka kann JSON Dateien exportieren und importieren, 
+und Python bietet Standardtools zur Verarbeitung von JSON. Bei der anschließenden Implementierung der Features war Luca
 maßgeblich beteiligt.\\
 
 In der letzten Phase des Projektes trainierten wir mit den generierten Dateien Modelle in Weka. Hierfür verwendeten wir
 unterschiedliche Featurekombinationen und untersuchten auch den Nutzen einzelner Features. Die entstanden Erkenntnisse
-verwendeten wir für die Entwicklung weiterer Features. Durch die Verwendung eines gemeinsamen GIT-Repository waren wir
-hier alle parallel beteiligt.\\
+verwendeten wir für die Entwicklung weiterer Features. Wir haben unsere Vorhaben mit GIT über Github synchronisiert.\\
 
-Für die Implementierung entschieden wir uns für Python, da uns hierfür schon das Werkzeug NLTK, zum einfacheren Verarbeiten
-der Texte zur Verfügung stand.\\
-Außerdem exportierten wir den Originaldatensatz aus Weka im *.JSON Format, da uns dieses vertrauter und leichter zu verarbeiten
-erschien als das *.ARFF Format.
+Wir entschieden uns für eine Implementation in Python, da die NLTK Library bequem Standardtools zur Textverarbeitung bietet
 
 
 \section{Daten}
@@ -117,9 +114,8 @@ Es gibt verschiedene Versionen des Datensatzes. Diese unterscheiden sich darin w
 Newsgroup-Texten (E-Mails) verwendet werden. In unserem Datensatz wurden alle Metadaten wie Datum, Empfänger oder Betreff
 entfernt, er enthält jeweils nur die tatsächliche Nachricht.\\
 
-Für dieses Projekt erhielten wir einen Teildatensatz von 3370 Instanzen mit Beiträgen aus den Kategorien Raumfahrt,
-Computergrafik, Religion und Atheismus. Er enthält folgende drei Features, die erstmal nicht von Weka zum
-Lernen benutzt werden können:
+Für dieses Projekt erhielten wir einen Teildatensatz aus den Kategorien Raumfahrt,
+Computergrafik, Religion und Atheismus. Er enthält 3370 Instanzen mit den folgenden drei Features:
 \begin{enumerate}[label=\roman*), itemsep=0pt,parsep=0pt, topsep=0pt]
 	\item ID: Numerisch, eine fortlaufende einzigartige Nummer über alle Instanzen
 	\item text: String, enthält den entsprechenden Newsgroup Beitrag
@@ -229,7 +225,7 @@ Hierdurch wird der Nachteil einer zu hohen Spezialisierung (Überanpassung) elim
 Algorithmus kann auf neue Daten bessere Ergebnisse erzielen.\\
 Da die Bäume parallel erzeugt werden können lassen sich Modelle mit diesem Algorithmus auch sehr schnell erzeugen.\\
 
-Eine Anwendung des Algorithmu\footnote{In Weka: Trees/RandomForest} auf unsere Daten ergibt einen F-Wert von 0,743.
+Eine Anwendung dieses Algorithmus\footnote{In Weka: Trees/RandomForest} auf unsere Daten ergibt einen F-Wert von 0,743.
 
 \newpage
 \section{Anhang}
