@@ -14,6 +14,19 @@ def main():
     rankings = getWordListRankings()
 
     appliedFeatureCombinations = {
+        "jochen": [
+            *wordPresenceFor(getWordsOf(
+                rankings["relativeStemmedWordCountAndPrevalenceMagnitude"],
+                takeToByCat = 1000,
+                cutoff = 0.3
+            )),
+            f.lexicalDiversityLemmatizedNostop,
+            f.max_word_length,
+            f.average_word_length,
+            f.avg_sentence_length,
+            f.contains_bible_reference_bool,
+            f.contains_bible_reference_number
+        ],
         "allSimpleFeatures": [
             f.max_word_length,
             f.average_word_length,
