@@ -16,7 +16,7 @@
 \usepackage{enumitem}\usepackage{float}
 \usepackage{soul}
 \usepackage[bottom]{footmisc}
-
+\usepackage{tikz}
 
 % -- CONFIG --
 \definecolor{hft}{RGB}{204,49,37}
@@ -27,7 +27,9 @@
 
 % -- NEW COMMANDS --
 \newcommand{\code}[1]{\texttt{\ul{#1}}}
-
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+            
 % -- HEADER --
 \pagestyle{scrheadings}
 \clearpairofpagestyles
@@ -118,11 +120,11 @@ entfernt, er enthält jeweils nur die tatsächliche Nachricht.\\
 Für dieses Projekt erhielten wir einen Teildatensatz von 3370 Instanzen mit Beiträgen aus den Kategorien Raumfahrt,
 Computergrafik, Religion und Atheismus. Er enthält folgende drei Features, die erstmal nicht von Weka zum
 Lernen benutzt werden können:
-\begin{enumerate}[label=\roman*), itemsep=0pt,parsep=0pt]
+\begin{enumerate}[label=\roman*), itemsep=0pt,parsep=0pt, topsep=0pt]
 	\item ID: Numerisch, eine fortlaufende einzigartige Nummer über alle Instanzen
 	\item text: String, enthält den entsprechenden Newsgroup Beitrag
 	\item group: Nominal, die Kategorie des Textes welche unseren Zielklassen entspricht:
-	\begin{enumerate}[label=\arabic*., itemsep=0pt,parsep=0pt, start=0]
+	\begin{enumerate}[label=\arabic*., itemsep=0pt,parsep=0pt, topsep=0pt, start=0]
 		\item Atheismus
 		\item Computergrafik
 		\item Raumfahrt
@@ -143,7 +145,7 @@ Im folgenden eine Auflistung unserer Features. Meist wurden diese im Projektverl
 Versionen verfügbar sind. Auf die letztendlich benutzten Feature und ihre Nutzbarkeit wird im Abschnitt \emph{\nameref{trainingsprozess}}
 näher eingegangen.
 
-\subsection{Zeichen zählen}
+\subsection{Zeichen zählen}\label{zeichenzaehlen}
 Beim Durchschauen der Texte kam uns der Gedanke, dass die Textlänge, also die Anzahl an Zeichen eines Textes, ein mögliches Feature
 ist, da die Textlänge der eher technischen Texte aus den Kategorien Computergrafik und Raumfahrt oft kürzer ausfielen als die eher
 philosophischen Texte aus Religion und Atheismus.\\
@@ -152,13 +154,13 @@ Das Feature \code{count chars} zählt daher für jeden Text die Anzahl an Zeiche
 Im weiteren Verlauf des Projektes entwickelte sich daraus die Variante \code{count chars ignore whitespace}, welche beim Zählen alle
 Leerzeichen unbeachtet lässt. 
 
-\subsection{Wörter zählen}
-Ein weiteres Basis Feature, aus dem sich viele weitere Versionen ableiten ließen, war \code{total word count}. Es zählt, aus wie vielen
+\subsection{Wörter zählen}\label{woerterZaehlen}
+Ein weiteres Basis Feature, aus dem sich viele weitere Versionen ableiten ließen, war \code{total word count}. Es zählt aus wie vielen
 Wörtern ein Text besteht. Hierbei werden nur echte Wörten beachtet.\\
 Davon abgeleitet entwickelte sich das Feature \code{average word length}, dass die durchschnittliche Wortlänge eines Texte berechnet und
 \code{max word length}, dass das längste Wort eines Textes sucht.
 
-\subsubsection{Wortdiversität}
+\subsubsection{Wortdiversität}\label{wortdiversitaet}
 Die Feature \code{lexical diversity} entspricht der Wortdiversität und zählt, aus wie vielen unterschiedlichen Wörtern ein Text besteht.\\
 Spezifizierend haben wir das Feature \code{lexical diversity nostop} entwickelt, dass Stoppwörter\footnote{Unter \emph{Stoppwörtern}
 versteht man sehr häufig auftretende Wörter, die meist keine direkte Relevanz für den Informationsgehalt eines Textes haben} ignoriert. \\
@@ -167,8 +169,11 @@ Um die Wortdiversität weiter zu verfeinern, sollten die Wörter vor dem Zählen
 einmal das sog. Stemming im Feature \code{lexical diversity stemmed nostop} und Lemmatizing im Feature \code{lexical diversity lemmatized
 nostop}
 
+\subsection{Bibelstellen}\label{bibelstellen}
+Da Bibelstellen ein relativ einheitliches Format besitzen und sehr häufig in der Zielklasse Religion vorkommen, zählt \code{contains bible
+reference number} die Anzahl an Bibelstellen pro Text.
 
-\subsection{Wörterlisten}
+\subsection{Wörterlisten}\label{woerterlisten}
 Anhand von verschiedenen Parameter werden aus den Trainingsdaten für jede Kategorie eine Liste mit den häufigsten Wörtern erstellt.\\
 Die Feature-Klasse \code{word Presence for} erstellt für alle ermittelten Wörter jeweils ein Feature, indem entweder
 \begin{itemize}[itemsep=0pt,parsep=0pt]
@@ -182,14 +187,49 @@ durch den Parameter \code{cutOff} beschränkt werden kann, indem nur Wörter ges
 häufiger vorkommen.
 
 
-\section{Trainingsprozess \& Fazit}\label{trainingsprozess}
+\section{Trainingsprozess}\label{trainingsprozess}
 Im Laufe des Projektes ließen wir Weka mit den verschiedensten Feature Kombinationen trainieren. Anhand der jeweiligen Ergebnisse
-veränderten wir bestehende oder entwickelten neue Features.\\
+veränderten wir bestehende, oder entwickelten neue Features.\\
+Mit der Weka Funktion \emph{Visualisierung} konnten wir graphisch schnell erkennen, ob ein Feature aussagekräftig ist, wie es zum
+Beispiel bei dem Wort \emph{space} für die Zielklasse Raumfahrt ist (siehe \autoref{fig:weka_visualize_space}).
 
+\subsection{Bewertung der Features}
+Der alleinige Einsatz der \emph{einfachen} Features (siehe \emph{\nameref{zeichenzaehlen}}, \emph{\nameref{woerterZaehlen}},
+\emph{\nameref{wortdiversitaet}}) ergab nur einen F-Wert von ca. 0,33. Pro Feature veränderte sich das Ergebnis um ca. 0,05. Erstaunlich
+war, dass auch das Lemmatizing als Verbesserung zum Stemming keine nennenswerte Verbesserung ergab.\\
+Ebenfalls war das Feature \emph{\nameref{bibelstellen}}, welches eine bessere Trennung von Religion zu Atheismus erzeugen sollte auch nicht
+besonders aussagekräftig.\\
+Erst der Einsatz unsere Featureklasse \emph{\nameref{woerterlisten}} ergab eine deutliche Steigerung des F-Wertes.\\
+Hierbei war zu erkennen, dass der F-Wert bei ca. 500 Wörter pro Zielklasse (also insg. fast 2000 Features) seinen höchsten Wert erreichte\\
 
+Den besten F-Wert von 0,689 erreichten wir schlussendlich mit folgenden Features:
+\begin{itemize}[itemsep=0pt,parsep=0pt, topsep=0pt]
+	\item Wörterliste mit jeweils 500 häufigsten gestemmten Wörter aus jeder Kategorie
+	\item Wortdiversität mit Lammatizing ohne Stoppwörtern
+	\item Maximale Wortlänge
+	\item Durchschnittliche Wortlänge und Satzlänge
+\end{itemize}
 
+\subsection{Bewertung des trainierten Modells mit Klassifizierer J48}
+Wie sich aus der Zusammenfassung der Evaluation mit den Testdaten (siehe \autoref{fig:detailed_accuracy_by_class} und
+\autoref{fig:confusion_matrix} erkennen lässt, lassen sich die Zielklassen Atheismus, Computergrafik und Raumfahrt schon sehr gut
+klassifizieren.\\
+Der Wert der Klasse Religion ist leider deutlich schlechter. Auch der Einsatz des Bibelstellen-Features erbrachte hier keine nennenswerte
+Verbesserung.
 
+\subsection{Einsatz eines alternativen Klassifizierer}
+Einzelne Entscheidungsbäume wie sie J48 erzeugt, neigen oft zu einer sog. Überanpassung. Darunter versteht man, dass der
+Baum mehr Entscheidungen trifft, als die Menge der Trainingsdaten rechtfertigen würden. Der Baum ist also zu speziell und liefert beim
+Anwenden auf neue Daten daher eher schlechte Ergebnisse\\
 
+Dieses Problem versucht man durch \emph{Zufallswälder} zu umgehen. Hierbei werden zuerst viele verschiedene Bäume generiert, die im
+Gegensatz zu einem J48-Baum leichtgewichtiger sind. Aus dem entstandenen \emph{Wald} berechnet sich die Gesamtentscheidung aus den
+Einzelergebnissen der Bäume.\\
+Hierdurch wird der Nachteil einer zu hohen Spezialisierung (Überanpassung) eliminiert und der
+Algorithmus kann auf neue Daten bessere Ergebnisse erzielen.\\
+Da die Bäume parallel erzeugt werden können lassen sich Modelle mit diesem Algorithmus auch sehr schnell erzeugen.\\
+
+Eine Anwendung des Algorithmu\footnote{In Weka: Trees/RandomForest} auf unsere Daten ergibt einen F-Wert von 0,743.
 
 \newpage
 \section{Anhang}
@@ -204,6 +244,44 @@ veränderten wir bestehende oder entwickelten neue Features.\\
 	\includegraphics[width=\textwidth]{figures/wort_auswertung_excel.png}
 	\caption{Erste Auswertungen über vorkommende Wörter}
 	\label{fig:wort_auswertung_excel}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{figures/weka_visualize_space.png}
+	\caption{Visualisierung des Features Vorkommen des Wortes \emph{Space}}
+	\label{fig:weka_visualize_space}
+\end{figure}
+
+\begin{figure}[H]
+	\center
+	\begin{tabular}{l||c|c|c}
+		\textbf{Zielklasse} & \textbf{Precision} & \textbf{Recal} & \textbf{F-Wert} \\ 
+		\hline
+		\hline
+		\textbf{0 (Atheismus)} 		& 0,686 & 0,628 & 0,656 \\ 
+		\textbf{1 (Computergrafik)} & 0,724 & 0,835 & 0,776 \\ 
+		\textbf{2 (Raumfahrt)} 		& 0,745 & 0,716 & 0,730 \\ 
+		\textbf{3 (Religion)} 		& 0,521 & 0,500 & 0,510 \\ 
+		\hline
+		\textit{Durchschnitt} 		& 0,690 & 0,691 & \textbf{0,689} \\ 
+	\end{tabular} 
+	\caption{Detailierte Genauigkeit pro Klasse}
+	\label{fig:detailed_accuracy_by_class}
+\end{figure}
+
+\begin{figure}[H]
+	\center
+	\begin{tabular}{c|c|c|c||l}
+	\textbf{a} & \textbf{b} & \textbf{c} & \textbf{d} & $\leftarrow$ Klassifiziert als \\ 
+	\hline 
+	\hline 
+	\circled{59} 	& 9 	& 10 	& 16 	& \textbf{a} (Atheismus) \\ 
+	4 	& \circled{76} 	& 7 	& 4 		& \textbf{b} (Computergrafik) \\ 
+	10 	& 16 	& \circled{73} 	& 3 		& \textbf{c} (Raumfahrt) \\ 
+	13 	& 4 	& 8 	& \circled{25} 		& \textbf{d} (Religion) \\ 
+	\end{tabular} 
+	\caption{Verwechslungs Matrix}
+	\label{fig:confusion_matrix}
 \end{figure}
 
 
