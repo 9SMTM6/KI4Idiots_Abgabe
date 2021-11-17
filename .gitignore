@@ -4,3 +4,18 @@ __pycache__
 *_compare.json
 *_validate.json
 *.pickle
+
+## no latex binaries etc
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+.*.lb
+/latex/build/**
