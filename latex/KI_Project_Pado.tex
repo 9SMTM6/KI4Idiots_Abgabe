@@ -170,18 +170,81 @@ Da Bibelstellen ein relativ einheitliches Format besitzen und sehr häufig in de
 reference number} die Anzahl an Bibelstellen pro Text.
 
 \subsection{Wörterlisten}\label{woerterlisten}
-Anhand von verschiedenen Parameter werden aus den Trainingsdaten für jede Kategorie eine Liste mit den häufigsten Wörtern erstellt.\\
-Die Feature-Klasse \code{word Presence for} erstellt für alle ermittelten Wörter jeweils ein Feature, indem entweder
-\begin{itemize}[itemsep=0pt,parsep=0pt]
-	\item das Vorkommen des Wortes im Text gezählt wird.
-	\item das Vorkommen des Wortes in Abhängigkeit mit der Wortanzahl des Text berechnet wird.
-	\item das Vorkommen des Wortes in Abhängigkeit der normierten (in diesem Fall gestemmten) Wortanzahl des Textes berechnet wird.
-\end{itemize}
+Verschiedene Wörter kommen unterschiedlich häufig vor in verschiedenen Themenbereichen. Wir wollen das als Features abbilden.
 
-Der Parameter \code{takeToByCat} definiert die Anzahl an Wörtern pro Kategorie, für die ein Feature erstellt werden soll, wobei dies noch
-durch den Parameter \code{cutOff} beschränkt werden kann, indem nur Wörter gesucht werden die im Verhältnis zu den anderen Kategorien 
-häufiger vorkommen.
+Wir könnten manuell Wörter erfinden, aber damit müssen wir die Arbeit leisten, verpassen vermutlich Wörter, 
+können weniger mit den Wörtern rumspielen, da wir nicht wirklich eine Größe dafür haben, wie relevant sie sind.
 
+Daher bestimmen wir algorithmisch die Wörter die wir relevant finden.
+
+\subsubsection{Präprocessing der Daten}
+
+Zum erstellen der Wortlisten haben wir zunächst alle Blogs Tokenized, dann die Tokenliste pro Kategorie zusammengefügt. 
+Aus diesen Listen haben wir die Stopwords entfernt, dann den POS-Tagger angewandt und nur Nomen, Verben, Adjektive und unbekannte Wörter beibehalten.
+
+Anschließend haben wir optional die vorhandenen Wörter gestemmt, mit nltk.PorterStemmer, oder die Wörter so belassen. 
+
+Über das Ergebnis des ganzen haben wir die Frequenzverteilung berechnet (d.h. wie oft kommen einzelne Wörter vor). 
+Diesen Schritt haben wir einmal auf den Wortlisten der einzelnen Kategorien gemacht und einmal auf auf der Kombination aller Kategorien, 
+sodass wir für jedes Wort wissen, wie oft es in den einzelnen Kategorien vorkommt, und insgesamt.
+
+Anschließend haben wir verschiedene Rankings versucht, die mit den Frequenzverteilungen erstellt wurden. 
+Auf diese wird später eingegangen. Nach diesen Rankings wurden anschließend Wörter ausgesucht. 
+Dabei haben wir 3 optionale Stellschrauben festgelegt: Den ausschluss von Wörtern, 
+deren Rang unter einem Schwellenwert ist und die Auswahl von N Wörtern nach Rang, einmal je nach Kategorie, einmal insgesamt.
+
+\subsubsection{Rankings}
+
+Dann zu den Rankings. Hier wurden ein paar alternativen ausprobiert. 
+Der simpelste Algorithmus verwendet einfach nur die Anzahl wie oft das Wort in seiner Kategorie vorkommt:
+
+\begin{equation}
+	N_{\text{Kat, wort}}
+\end{equation}
+
+Eine mögliche Verbesserung davon ist es, das Vorkommen des Wortes in der Kategorie durch das Vorkommen in allen zu Teilen ($N_{\text{Kat, wort}} / N_{\text{wort}}$). 
+
+Dies ist allerdings Problematisch, da dadurch auch Wörter gut wegkommen, die insgesamt selten vorkommen, diese sind aber vermutlich kein guter Entscheider sondern einfach ungewöhnliche Wörter.
+Daher wollen wir desweiteren die insgesamte Häufigkeit des Wortes im vergleich zu allen Wörtern
+
+\begin{equation}
+	N_{\text{wort}} / N
+\end{equation} 
+
+bestimmen und diese beiden Größen verknüpfen.
+Eine einfache Multiplikation 
+
+\begin{equation}
+	N_{\text{Kat, wort}} / N_{\text{wort}} \times N_{\text{wort}} / N
+\end{equation}
+
+bewertet allerdings beide Größen ungefähr gleich. 
+Dies ist eine Option, allerdings ist zu vermuten dass der neue Part weniger wichtig ist. 
+Er sollte nach unserer Einschätzung nur als Größenordnung einfließen. 
+Um das zu erreichen bietet sich der Logarithmus an:
+
+\begin{equation} \label{eq-log}
+	N_{\text{Kat, wort}} / N_{\text{wort}} \times log(N_{\text{wort}}) / log(N)
+\end{equation}
+
+Wir hatten noch ein paar weitergehende Ideen, wie das ein Wort höher ranken sollte wenn es in anderen Kategorien \textbf{nicht} vorkommt, 
+allerdings haben unsere Versuche dies im Ranking aufzunehmen die genauigkeit der Algorithmen lediglich verschlechtert.
+
+\subsubsection{Erstellung von Features aus den Wörtern}
+
+Für die ungestemmten wörter haben wir verschiedene Wege versucht ein Feature mit den Wörtern zu erstellen:
+Einmal überprüfen wir lediglich die Anwesenheit eines Wortes.
+Einmal ist das Feature die relative Häufigkeit des Features in dem Blog.
+
+Diese Features waren ein wenig teuer (in Rechenzeit) und waren, zumindest wie wir sie implementiert haben, nicht auf die gestemmten Wörter anwendbar.
+Daher haben wir für diese Wörter eine andere Variante versucht, in der mit einer Regex die vorkommen gesucht wurden, 
+und der Wert dadurch geteilt wurde, wie häufig das Wort in dem Blog vorkommen könnte (also die Zeichenlänge des Blogs durch die Zeichenlänge des Wortes).
+
+\subsubsection{Ergebnisse der Vorversuche}
+
+Bei den Rankings schlug sich zumeist die Gleichung \ref{eq-log} am besten.
+
+In ersten Versuchen ergab die gestemmte Variante bei niedrigen Wortzahlen schnell sehr gute F-Werte, verlor allerdings bei größeren Anzahlen Genauigkeit, bis sie von der ungestemmten Variante geschlagen wurde.
 
 \section{Trainingsprozess}\label{trainingsprozess}
 Im Laufe des Projektes ließen wir Weka mit den verschiedensten Feature Kombinationen trainieren. Anhand der jeweiligen Ergebnisse
