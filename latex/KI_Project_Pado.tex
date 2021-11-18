@@ -26,7 +26,7 @@
 \setlength\parindent{0pt}
 \restylefloat{figure}
 \titleformat{\section}{\normalfont\scshape\bfseries}{\thesection}{1.1em}{}
-\titleformat{\subsection}{\normalfont\scshape\bfseries}{\thesubsection}{.11em}{}
+\titleformat{\subsection}{\normalfont\scshape\bfseries}{\thesubsection}{1.1em}{}
 \titleformat{\subsubsection}{\normalfont\scshape\bfseries}{\thesubsubsection}{1.1em}{}
 \titlespacing*{\section}{0pt}{0.2cm}{0em}
 \titlespacing*{\subsection}{0pt}{0.2cm}{0em}
@@ -73,7 +73,7 @@
        \vspace{1cm}
        
        \begin{flushleft}\quad Teilnehmer:\end{flushleft}
-       {\large Jochen Spender (1000146}\\\vspace{0.1cm}
+       {\large Jochen Spender (1000146)}\\\vspace{0.1cm}
        {\large Luca Lissner (1002327)}\\\vspace{0.1cm}
        {\large Mario Podda (379210)}\\\vspace{0.1cm}
        {\large Samuel Maier (1002330)}
@@ -85,17 +85,16 @@
 \end{titlepage}
 
 % -- TABLE OF CONTENTS AND SOURCES --
-%\newgeometry{lmargin={2cm},rmargin={2cm},tmargin={2.5cm},bmargin = {2.5cm}, headsep={0.3cm}}
 \newgeometry{left=2cm, right=2cm, top=1.2cm, bottom=1.2cm,includehead,includefoot, headsep=0.3cm,footskip=0.3cm,heightrounded}
-\tableofcontents
-\newpage
+%\tableofcontents
+%\newpage
 
 %% -- CONTENT --
 \section{Dokumentation unseres Vorgehens}
 Für das Präprocessing verwendeten wir Python, dieses bietet die hilfreiche NLTK Library.
 
 Das Training wurde mit Weka durchgeführt. Wir verwendeten unterschiedliche Featurekombinationen und untersuchten auch den Nutzen einzelner Features. Die entstanden Erkenntnisse
-verwendeten wir für die Entwicklung weiterer Features. Wir haben unsere Vorhaben mit \code{git} über Github synchronisiert.\\
+verwendeten wir für die Entwicklung weiterer Features. Wir haben unsere Vorhaben mit \code{git} über Github synchronisiert. Die Arbeitslast im Team war gut verteilt.\\
 
 \section{Daten}
 Der \emph{20 Newsgroups} Datensatz ist eine Sammlung aus etwas 20.000 Newsgroup Beiträgen, gleichmäßig unterteilt in 20
@@ -115,7 +114,8 @@ Computergrafik, Religion und Atheismus. Er enthält 3370 Instanzen mit den folge
 		0: Atheismus, 1: Computergrafik, 2: Raumfahrt, 3: Religion
 \end{enumerate}
 
-Wir entschieden uns, den Datensatz im Verhältnis 80:10:10 in Trainings-, Entwicklungs- und Testdaten zu trennen. Unsere Entwicklungs- und Testdaten besitzen somit jeweils 337 Instanzen, was nach AUssagender Vorlesung aureicht zur verifizierung
+Wir entschieden uns, den Datensatz im Verhältnis 80:10:10 in Trainings-, Entwicklungs- und Testdaten zu trennen. Unsere Entwicklungs- und Testdaten besitzen
+somit jeweils 337 Instanzen, was nach entsprechender Vorlesung zur Verifizierung ausreicht.
 
 \section{Features}
 Im folgenden eine Auflistung unserer Features. Meist wurden diese im Projektverlauf verbessert, so dass teilweise ähnliche
@@ -124,29 +124,29 @@ näher eingegangen.
 
 \subsection{Zeichen zählen}\label{zeichenzaehlen}
 Beim Durchschauen der Texte kam uns der Gedanke, dass die Textlänge, also die Anzahl an Zeichen eines Textes, ein mögliches Feature
-ist, da die Textlänge der eher technischen Texte aus den Kategorien Computergrafik und Raumfahrt oft kürzer ausfielen als die eher
-philosophischen Texte aus Religion und Atheismus.\\
+ist, da die Textlänge der eher technischen Texte aus den Kategorien Computergrafik und Raumfahrt oft kürzer ausfielen, als die eher
+philosophischen Texte aus Religion und Atheismus.
 
 \subsection{Wörter zählen}\label{woerterZaehlen}
-Ein weiteres Basis Feature, aus dem sich viele weitere Versionen ableiten ließen ist das zählen aus wie vielen
-Wörtern ein Text besteht.\\
+Ein weiteres Basis Feature, aus dem sich viele weitere Versionen ableiten ließen, ist das Zählen aus wie vielen
+Wörtern ein Text besteht.
 
-\subsection{Wortlänge}
-Die durchschnittliche und maximale Wortlänge eines Textes könnten sich zwischen den Kategorien ändern.
+\subsubsection{Wortlänge}
+Die durchschnittliche und maximale Wortlänge eines Textes könnten sich zwischen den Kategorien unterscheiden.
 
 \subsubsection{Wortdiversität}\label{wortdiversitaet}
-Die Wortdiversität soll darstellen aus wie vielen unterschiedlichen Wörtern ein Text besteht.\\
-Spezifizierend wir haben das Feature verbessert indem Stoppwörter\footnote{Unter \emph{Stoppwörtern}
-versteht man sehr häufig auftretende Wörter, die meist keine direkte Relevanz für den Informationsgehalt eines Textes haben} ignoriert werden. \\
-
-Um die Wortdiversität weiter zu verfeinern, sollten die Wörter in unterscheidlichen ausdrücken, etwa \emph{Wort} und \emph{Wörter} zusammen gezählt werden. Hierfür verwendeten wir zwei Methoden, das sog. Stemming (rein algorithmisch) und das Lemmatizing (gleicht mit Wortlisten ab).
+Die Wortdiversität soll darstellen, aus wie vielen unterschiedlichen Wörtern ein Text besteht. Spezifizierend haben wir das Feature verbessert,
+indem Stoppwörter\footnote{Unter \emph{Stoppwörtern} versteht man sehr häufig auftretende Wörter, die meist keine direkte Relevanz für den Informationsgehalt
+eines Textes haben} ignoriert werden. \\
+Um die Wortdiversität weiter zu verfeinern, sollten die Wörter in unterschiedlichen Ausdrücken, etwa \emph{Wort} und \emph{Wörter} zusammen gezählt werden.
+Hierfür verwendeten wir zwei Methoden, das sog. Stemming (rein algorithmisch) und das Lemmatizing (gleicht mit Wortlisten ab).
 
 \subsection{Bibelstellen}\label{bibelstellen}
-Da Bibelstellen ein relativ einheitliches Format besitzen und sehr häufig in der Zielklasse Religion vorkommen, zählt \code{contains bible
-reference number} die Anzahl an Bibelstellen pro Text.
+Da Bibelstellen ein relativ einheitliches Format besitzen und sehr häufig in der Zielklasse Religion vorkommen, zählt dieses Feature die Anzahl an Bibelstellen
+pro Text.
 
 \subsection{Wörterlisten}\label{woerterlisten}
-Verschiedene Wörter kommen unterschiedlich häufig vor in verschiedenen Themenbereichen. Wir wollen das als Features abbilden.
+Verschiedene Wörter kommen unterschiedlich häufig in verschiedenen Themenbereichen vor. Wir wollen das als Features abbilden.
 
 Wir könnten manuell Wörter erfinden, aber damit müssen wir die Arbeit leisten, verpassen vermutlich Wörter, 
 können weniger mit den Wörtern rumspielen, da wir nicht wirklich eine Größe dafür haben, wie relevant sie sind.
@@ -207,7 +207,7 @@ In ersten Versuchen ergab die gestemmte Variante bei niedrigen Wortzahlen schnel
 
 \section{Trainingsprozess}\label{trainingsprozess}
 Mit der Weka Funktion \emph{Visualisierung} konnten wir graphisch schnell erkennen, ob ein Feature aussagekräftig ist, wie es zum
-Beispiel bei dem Wort \emph{space} für die Zielklasse Raumfahrt ist (siehe \autoref{fig:weka_visualize_space}).
+Beispiel bei dem Wort \emph{space} für die Zielklasse Raumfahrt der Fall ist (\autoref{fig:weka_visualize_space}).
 
 \subsection{Bewertung der Features}
 Der alleinige Einsatz der \emph{einfachen} Features (siehe \emph{\nameref{zeichenzaehlen}}, \emph{\nameref{woerterZaehlen}},
@@ -216,8 +216,7 @@ war, dass auch das Lemmatizing als Verbesserung zum Stemming keine nennenswerte 
 Ebenfalls war das Feature \emph{\nameref{bibelstellen}}, welches eine bessere Trennung von Religion zu Atheismus erzeugen sollte auch nicht
 besonders aussagekräftig.\\
 Erst der Einsatz unsere Featureklasse \emph{\nameref{woerterlisten}} ergab eine deutliche Steigerung des F-Wertes.\\
-Hierbei war zu erkennen, dass der F-Wert über ca. 500 Wörter pro Zielklasse abfiehl\\
-
+Hierbei war zu erkennen, dass der F-Wert ab ca. 500 Wörter pro Zielklasse wieder abfiel\\
 Den besten F-Wert von 0,689 erreichten wir schlussendlich mit folgenden Features:
 \begin{itemize}[itemsep=0pt,parsep=0pt, topsep=0pt]
 	\item Wörterliste mit jeweils 500 häufigsten gestemmten Wörter aus jeder Kategorie
@@ -234,7 +233,8 @@ Auch der Einsatz des Bibelstellen-Features erbrachte hier keine nennenswerte
 Verbesserung.
 Dies ist für den verlässlichen Einsatz viel zu gering.
 Auch \autoref{fig:detailed_accuracy_by_class} spiegelt das wieder.
-Des weiteren ist zu beachten, dass die Texte auch gut über zwanzig Jahre alt sind und damit sind die Muster der Beiträge wahrscheinlich nicht auf Muster mit aktuellen Daten zu übertragen.
+Des weiteren ist zu beachten, dass die Texte auch gut über zwanzig Jahre alt sind und damit sind die Muster der Beiträge wahrscheinlich nicht
+auf Muster mit aktuellen Daten zu übertragen.
 
 \subsection{Einsatz eines alternativen Klassifizierer}
 Einzelne Entscheidungsbäume wie sie J48 erzeugt, neigen oft zu einer sog. Überanpassung. Der Baum ist also zu speziell und liefert beim
