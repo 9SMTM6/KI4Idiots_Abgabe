@@ -17,6 +17,7 @@
 \usepackage{soul}
 \usepackage[bottom]{footmisc}
 \usepackage{tikz}
+\usepackage{titlesec}
 
 % -- CONFIG --
 \definecolor{hft}{RGB}{204,49,37}
@@ -24,6 +25,14 @@
 \addto\extrasngerman{\def\figureautorefname{Abb.}}
 \setlength\parindent{0pt}
 \restylefloat{figure}
+\titleformat{\section}{\normalfont\scshape\bfseries}{\thesection}{1.1em}{}
+\titleformat{\subsection}{\normalfont\scshape\bfseries}{\thesubsection}{.11em}{}
+\titleformat{\subsubsection}{\normalfont\scshape\bfseries}{\thesubsubsection}{1.1em}{}
+\titlespacing*{\section}{0pt}{0.2cm}{0em}
+\titlespacing*{\subsection}{0pt}{0.2cm}{0em}
+\titlespacing*{\subsubsection}{0pt}{0.2cm}{0em}
+
+
 
 % -- NEW COMMANDS --
 \newcommand{\code}[1]{\texttt{\ul{#1}}}
@@ -64,10 +73,10 @@
        \vspace{1cm}
        
        \begin{flushleft}\quad Teilnehmer:\end{flushleft}
-       {\large Jochen Spender}\\\vspace{0.1cm}
-       {\large Luca Lissner}\\\vspace{0.1cm}
-       {\large Mario Podda}\\\vspace{0.1cm}
-       {\large Samuel Maier}
+       {\large Jochen Spender (1000146}\\\vspace{0.1cm}
+       {\large Luca Lissner (1002327)}\\\vspace{0.1cm}
+       {\large Mario Podda (379210)}\\\vspace{0.1cm}
+       {\large Samuel Maier (1002330)}
        \vspace{1cm}
        
        \begin{flushleft}\quad Abgabe:\end{flushleft}
@@ -102,13 +111,8 @@ Computergrafik, Religion und Atheismus. Er enthält 3370 Instanzen mit den folge
 \begin{enumerate}[label=\roman*), itemsep=0pt,parsep=0pt, topsep=0pt]
 	\item ID: Numerisch, eine fortlaufende einzigartige Nummer über alle Instanzen
 	\item text: String, enthält den entsprechenden Newsgroup Beitrag
-	\item group: Nominal, die Kategorie des Textes welche unseren Zielklassen entspricht:
-	\begin{enumerate}[label=\arabic*., itemsep=0pt,parsep=0pt, topsep=0pt, start=0]
-		\item Atheismus
-		\item Computergrafik
-		\item Raumfahrt
-		\item Religion
-	\end{enumerate}
+	\item group: Nominal, die Kategorie des Textes welche unseren Zielklassen entspricht:\\
+		0: Atheismus, 1: Computergrafik, 2: Raumfahrt, 3: Religion
 \end{enumerate}
 
 Wir entschieden uns, den Datensatz im Verhältnis 80:10:10 in Trainings-, Entwicklungs- und Testdaten zu trennen. Unsere Entwicklungs- und Testdaten besitzen somit jeweils 337 Instanzen, was nach AUssagender Vorlesung aureicht zur verifizierung
@@ -151,8 +155,8 @@ Daher bestimmen wir algorithmisch die Wörter die wir relevant finden.
 
 \subsubsection{Präprocessing der Daten}
 
-Zum erstellen der Wortlisten haben wir zunächst alle Blogs Tokenized, dann die Tokenliste pro Kategorie zusammengefügt. 
-Aus diesen Listen haben wir die Stopwords entfernt, dann den POS-Tagger angewandt und nur Nomen, Verben, Adjektive und unbekannte Wörter beibehalten.
+Zum Erstellen der Wortlisten haben wir zunächst alle Blogs Tokenized, dann die Tokenliste pro Kategorie zusammengefügt. 
+Aus diesen Listen haben wir die Stoppwörter entfernt, dann den POS-Tagger angewandt und nur Nomen, Verben, Adjektive und unbekannte Wörter beibehalten.
 
 Anschließend haben wir optional die vorhandenen Wörter gestemmt, mit nltk.PorterStemmer, oder die Wörter so belassen. 
 
@@ -162,7 +166,7 @@ sodass wir für jedes Wort wissen, wie oft es in den einzelnen Kategorien vorkom
 
 Anschließend haben wir verschiedene Rankings versucht, die mit den Frequenzverteilungen erstellt wurden. 
 Auf diese wird später eingegangen. Nach diesen Rankings wurden anschließend Wörter ausgesucht. 
-Dabei haben wir 3 optionale Stellschrauben festgelegt: Den ausschluss von Wörtern, 
+Dabei haben wir 3 optionale Stellschrauben festgelegt: Den Ausschluss von Wörtern, 
 deren Rang unter einem Schwellenwert ist und die Auswahl von N Wörtern nach Rang, einmal je nach Kategorie, einmal insgesamt.
 
 Dann zu den Rankings. Hier wurden ein paar alternativen ausprobiert. 
@@ -171,7 +175,7 @@ Der simpelste Algorithmus verwendet einfach nur die Anzahl wie oft das Wort in s
 Eine mögliche Verbesserung davon ist es, das Vorkommen des Wortes in der Kategorie durch das Vorkommen in allen zu Teilen ($N_{\text{Kat, wort}} / N_{\text{wort}}$). 
 
 Dies ist allerdings Problematisch, da dadurch auch Wörter gut wegkommen, die insgesamt selten vorkommen, diese sind aber vermutlich kein guter Entscheider sondern einfach ungewöhnliche Wörter.
-Daher wollen wir desweiteren die insgesamte Häufigkeit des Wortes im vergleich zu allen Wörtern ($N_{\text{wort}} / N$) bestimmen und diese beiden Größen verknüpfen.
+Daher wollen wir des weiteren die insgesamt Häufigkeit des Wortes im Vergleich zu allen Wörtern ($N_{\text{wort}} / N$) bestimmen und diese beiden Größen verknüpfen.
 Eine einfache Multiplikation ($N_{\text{Kat, wort}} / N_{\text{wort}} \times N_{\text{wort}} / N$)
 bewertet allerdings beide Größen ungefähr gleich. 
 Dies ist eine Option, allerdings ist zu vermuten dass der neue Part weniger wichtig ist. 
@@ -183,11 +187,11 @@ Um das zu erreichen bietet sich der Logarithmus an:
 \end{equation}
 
 Wir hatten noch ein paar weitergehende Ideen, wie das ein Wort höher ranken sollte wenn es in anderen Kategorien \textbf{nicht} vorkommt, 
-allerdings haben unsere Versuche dies im Ranking aufzunehmen die genauigkeit der Algorithmen lediglich verschlechtert.
+allerdings haben unsere Versuche dies im Ranking aufzunehmen die Genauigkeit der Algorithmen lediglich verschlechtert.
 
 \subsubsection{Erstellung von Features aus den Wörtern}
 
-Für die ungestemmten wörter haben wir verschiedene Wege versucht ein Feature mit den Wörtern zu erstellen:
+Für die ungestemmten Wörter haben wir verschiedene Wege versucht ein Feature mit den Wörtern zu erstellen:
 Einmal überprüfen wir lediglich die Anwesenheit eines Wortes.
 Einmal ist das Feature die relative Häufigkeit des Features in dem Blog.
 
@@ -230,7 +234,7 @@ Auch der Einsatz des Bibelstellen-Features erbrachte hier keine nennenswerte
 Verbesserung.
 Dies ist für den verlässlichen Einsatz viel zu gering.
 Auch \autoref{fig:detailed_accuracy_by_class} spiegelt das wieder.
-Desweiteren ist zu beachten, dass die Texte auch gut über zwanzig Jahre alt sind und damit sind die Muster der Beiträge wahrscheinlich nicht auf Muster mit aktuellen Daten zu übertragen.
+Des weiteren ist zu beachten, dass die Texte auch gut über zwanzig Jahre alt sind und damit sind die Muster der Beiträge wahrscheinlich nicht auf Muster mit aktuellen Daten zu übertragen.
 
 \subsection{Einsatz eines alternativen Klassifizierer}
 Einzelne Entscheidungsbäume wie sie J48 erzeugt, neigen oft zu einer sog. Überanpassung. Der Baum ist also zu speziell und liefert beim
