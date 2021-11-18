@@ -83,24 +83,10 @@
 
 %% -- CONTENT --
 \section{Dokumentation unseres Vorgehens}
-Zu Beginn des Projektes verschafften wir uns über die vorliegenden Daten einen Überblick,
-indem wir diese nach Zielklassen farblich getrennt darstellten. (\autoref{fig:texte_grafisch_getrennt})\\
-Zudem stellten wir Nachforschungen zu den Daten und deren Herkunft an und versuchten mit Hilfe von kleinen
-Skripts und Excel (\autoref{fig:wort_auswertung_excel}), Gemeinsamkeiten in Abhängigkeit zur Zielklasse
-herauszufinden. Anhand dieser Erkenntnisse formulierten wir erste Features. Hierbei waren hauptsächlich Mario
-und Jochen beteiligt.\\
+Für das Präprocessing verwendeten wir Python, dieses bietet die hilfreiche NLTK Library.
 
-Anschließend entwickelte Samuel ein Python Skript, dass eine JSON-Datei einliest, Features berechnet und
-dann drei Dateien ausgibt, um in Weka weiter zu arbeiten. Weka kann JSON Dateien exportieren und importieren, 
-und Python bietet Standardtools zur Verarbeitung von JSON. Bei der anschließenden Implementierung der Features war Luca
-maßgeblich beteiligt.\\
-
-In der letzten Phase des Projektes trainierten wir mit den generierten Dateien Modelle in Weka. Hierfür verwendeten wir
-unterschiedliche Featurekombinationen und untersuchten auch den Nutzen einzelner Features. Die entstanden Erkenntnisse
-verwendeten wir für die Entwicklung weiterer Features. Wir haben unsere Vorhaben mit GIT über Github synchronisiert.\\
-
-Wir entschieden uns für eine Implementation in Python, da die NLTK Library bequem Standardtools zur Textverarbeitung bietet
-
+Das Training wurde mit Weka durchgeführt. Wir verwendeten unterschiedliche Featurekombinationen und untersuchten auch den Nutzen einzelner Features. Die entstanden Erkenntnisse
+verwendeten wir für die Entwicklung weiterer Features. Wir haben unsere Vorhaben mit \code{git} über Github synchronisiert.\\
 
 \section{Daten}
 Der \emph{20 Newsgroups} Datensatz ist eine Sammlung aus etwas 20.000 Newsgroup Beiträgen, gleichmäßig unterteilt in 20
@@ -108,10 +94,7 @@ verschiedene Themen aus den sog. Big Eight\footnote{Die \emph{Big Eight} stehen 
 Diskussion, Gesellschaft \& Politik, Wissenschaft, Kultur, Freizeit \& Hobby, News und Sonstiges.}. Aus einem Kommentar
 aus dem Original-Datensatz geht hervor, dass der vermeintliche Autor Ken Lang die Daten für sein Projekt \emph{Newsweeder}
 zusammentrug.\\
-Der Datensatz wird sehr gerne für Experimente mit Techniken des Maschinellen Lernens wie Textklassifizierung und
-Textclustering  benutzt.\\
-Es gibt verschiedene Versionen des Datensatzes. Diese unterscheiden sich darin welche Informationen aus den originalen
-Newsgroup-Texten (E-Mails) verwendet werden. In unserem Datensatz wurden alle Metadaten wie Datum, Empfänger oder Betreff
+Es gibt verschiedene Versionen des Datensatzes. In unserem Datensatz wurden alle Metadaten wie Datum, Empfänger oder Betreff
 entfernt, er enthält jeweils nur die tatsächliche Nachricht.\\
 
 Für dieses Projekt erhielten wir einen Teildatensatz aus den Kategorien Raumfahrt,
@@ -128,13 +111,7 @@ Computergrafik, Religion und Atheismus. Er enthält 3370 Instanzen mit den folge
 	\end{enumerate}
 \end{enumerate}
 
-Beim Analysieren der Daten bemerkten wir recht schnell, dass die Texte aus den Kategorien Atheismus und 
-Religion einen ähnlichen Wortschatz besaßen und es sehr schwer werden würde Texte aus diesen beiden Kategorien zu 
-klassifizieren.\\
-
-Wir entschieden uns, den Datensatz im Verhältnis 80:10:10 in Trainings-, Entwicklungs- und Testdaten zu trennen. So besaßen
-unsere Entwicklungs- und Testdaten mit jeweils 337 Instanzen immer noch genügend Daten um das gelernte Model zuverlässig 
-verifizieren zu können.
+Wir entschieden uns, den Datensatz im Verhältnis 80:10:10 in Trainings-, Entwicklungs- und Testdaten zu trennen. Unsere Entwicklungs- und Testdaten besitzen somit jeweils 337 Instanzen, was nach AUssagender Vorlesung aureicht zur verifizierung
 
 \section{Features}
 Im folgenden eine Auflistung unserer Features. Meist wurden diese im Projektverlauf verbessert, so dass teilweise ähnliche
@@ -145,25 +122,20 @@ näher eingegangen.
 Beim Durchschauen der Texte kam uns der Gedanke, dass die Textlänge, also die Anzahl an Zeichen eines Textes, ein mögliches Feature
 ist, da die Textlänge der eher technischen Texte aus den Kategorien Computergrafik und Raumfahrt oft kürzer ausfielen als die eher
 philosophischen Texte aus Religion und Atheismus.\\
-Das Feature \code{count chars} zählt daher für jeden Text die Anzahl an Zeichen.\\
-
-Im weiteren Verlauf des Projektes entwickelte sich daraus die Variante \code{count chars ignore whitespace}, welche beim Zählen alle
-Leerzeichen unbeachtet lässt. 
 
 \subsection{Wörter zählen}\label{woerterZaehlen}
-Ein weiteres Basis Feature, aus dem sich viele weitere Versionen ableiten ließen, war \code{total word count}. Es zählt aus wie vielen
-Wörtern ein Text besteht. Hierbei werden nur echte Wörten beachtet.\\
-Davon abgeleitet entwickelte sich das Feature \code{average word length}, dass die durchschnittliche Wortlänge eines Texte berechnet und
-\code{max word length}, dass das längste Wort eines Textes sucht.
+Ein weiteres Basis Feature, aus dem sich viele weitere Versionen ableiten ließen ist das zählen aus wie vielen
+Wörtern ein Text besteht.\\
+
+\subsection{Wortlänge}
+Die durchschnittliche und maximale Wortlänge eines Textes könnten sich zwischen den Kategorien ändern.
 
 \subsubsection{Wortdiversität}\label{wortdiversitaet}
-Die Feature \code{lexical diversity} entspricht der Wortdiversität und zählt, aus wie vielen unterschiedlichen Wörtern ein Text besteht.\\
-Spezifizierend haben wir das Feature \code{lexical diversity nostop} entwickelt, dass Stoppwörter\footnote{Unter \emph{Stoppwörtern}
-versteht man sehr häufig auftretende Wörter, die meist keine direkte Relevanz für den Informationsgehalt eines Textes haben} ignoriert. \\
+Die Wortdiversität soll darstellen aus wie vielen unterschiedlichen Wörtern ein Text besteht.\\
+Spezifizierend wir haben das Feature verbessert indem Stoppwörter\footnote{Unter \emph{Stoppwörtern}
+versteht man sehr häufig auftretende Wörter, die meist keine direkte Relevanz für den Informationsgehalt eines Textes haben} ignoriert werden. \\
 
-Um die Wortdiversität weiter zu verfeinern, sollten die Wörter vor dem Zählen normalisiert werden. Hierfür verwendeten wir zwei Methoden,
-einmal das sog. Stemming im Feature \code{lexical diversity stemmed nostop} und Lemmatizing im Feature \code{lexical diversity lemmatized
-nostop}
+Um die Wortdiversität weiter zu verfeinern, sollten die Wörter in unterscheidlichen ausdrücken, etwa \emph{Wort} und \emph{Wörter} zusammen gezählt werden. Hierfür verwendeten wir zwei Methoden, das sog. Stemming (rein algorithmisch) und das Lemmatizing (gleicht mit Wortlisten ab).
 
 \subsection{Bibelstellen}\label{bibelstellen}
 Da Bibelstellen ein relativ einheitliches Format besitzen und sehr häufig in der Zielklasse Religion vorkommen, zählt \code{contains bible
@@ -193,31 +165,14 @@ Auf diese wird später eingegangen. Nach diesen Rankings wurden anschließend W�
 Dabei haben wir 3 optionale Stellschrauben festgelegt: Den ausschluss von Wörtern, 
 deren Rang unter einem Schwellenwert ist und die Auswahl von N Wörtern nach Rang, einmal je nach Kategorie, einmal insgesamt.
 
-\subsubsection{Rankings}
-
 Dann zu den Rankings. Hier wurden ein paar alternativen ausprobiert. 
-Der simpelste Algorithmus verwendet einfach nur die Anzahl wie oft das Wort in seiner Kategorie vorkommt:
-
-\begin{equation}
-	N_{\text{Kat, wort}}
-\end{equation}
+Der simpelste Algorithmus verwendet einfach nur die Anzahl wie oft das Wort in seiner Kategorie vorkommt ($N_{\text{Kat, wort}}$)
 
 Eine mögliche Verbesserung davon ist es, das Vorkommen des Wortes in der Kategorie durch das Vorkommen in allen zu Teilen ($N_{\text{Kat, wort}} / N_{\text{wort}}$). 
 
 Dies ist allerdings Problematisch, da dadurch auch Wörter gut wegkommen, die insgesamt selten vorkommen, diese sind aber vermutlich kein guter Entscheider sondern einfach ungewöhnliche Wörter.
-Daher wollen wir desweiteren die insgesamte Häufigkeit des Wortes im vergleich zu allen Wörtern
-
-\begin{equation}
-	N_{\text{wort}} / N
-\end{equation} 
-
-bestimmen und diese beiden Größen verknüpfen.
-Eine einfache Multiplikation 
-
-\begin{equation}
-	N_{\text{Kat, wort}} / N_{\text{wort}} \times N_{\text{wort}} / N
-\end{equation}
-
+Daher wollen wir desweiteren die insgesamte Häufigkeit des Wortes im vergleich zu allen Wörtern ($N_{\text{wort}} / N$) bestimmen und diese beiden Größen verknüpfen.
+Eine einfache Multiplikation ($N_{\text{Kat, wort}} / N_{\text{wort}} \times N_{\text{wort}} / N$)
 bewertet allerdings beide Größen ungefähr gleich. 
 Dies ist eine Option, allerdings ist zu vermuten dass der neue Part weniger wichtig ist. 
 Er sollte nach unserer Einschätzung nur als Größenordnung einfließen. 
@@ -247,8 +202,6 @@ Bei den Rankings schlug sich zumeist die Gleichung \ref{eq-log} am besten.
 In ersten Versuchen ergab die gestemmte Variante bei niedrigen Wortzahlen schnell sehr gute F-Werte, verlor allerdings bei größeren Anzahlen Genauigkeit, bis sie von der ungestemmten Variante geschlagen wurde.
 
 \section{Trainingsprozess}\label{trainingsprozess}
-Im Laufe des Projektes ließen wir Weka mit den verschiedensten Feature Kombinationen trainieren. Anhand der jeweiligen Ergebnisse
-veränderten wir bestehende, oder entwickelten neue Features.\\
 Mit der Weka Funktion \emph{Visualisierung} konnten wir graphisch schnell erkennen, ob ein Feature aussagekräftig ist, wie es zum
 Beispiel bei dem Wort \emph{space} für die Zielklasse Raumfahrt ist (siehe \autoref{fig:weka_visualize_space}).
 
@@ -259,7 +212,7 @@ war, dass auch das Lemmatizing als Verbesserung zum Stemming keine nennenswerte 
 Ebenfalls war das Feature \emph{\nameref{bibelstellen}}, welches eine bessere Trennung von Religion zu Atheismus erzeugen sollte auch nicht
 besonders aussagekräftig.\\
 Erst der Einsatz unsere Featureklasse \emph{\nameref{woerterlisten}} ergab eine deutliche Steigerung des F-Wertes.\\
-Hierbei war zu erkennen, dass der F-Wert bei ca. 500 Wörter pro Zielklasse (also insg. fast 2000 Features) seinen höchsten Wert erreichte\\
+Hierbei war zu erkennen, dass der F-Wert über ca. 500 Wörter pro Zielklasse abfiehl\\
 
 Den besten F-Wert von 0,689 erreichten wir schlussendlich mit folgenden Features:
 \begin{itemize}[itemsep=0pt,parsep=0pt, topsep=0pt]
@@ -270,15 +223,17 @@ Den besten F-Wert von 0,689 erreichten wir schlussendlich mit folgenden Features
 \end{itemize}
 
 \subsection{Bewertung des trainierten Modells mit Klassifizierer J48}
-Wie sich aus der Zusammenfassung der Evaluation mit den Testdaten (siehe \autoref{fig:detailed_accuracy_by_class} und
-\autoref{fig:confusion_matrix} erkennen lässt, lassen sich die Zielklassen Atheismus, Computergrafik und Raumfahrt schon sehr gut
-klassifizieren.\\
-Der Wert der Klasse Religion ist leider deutlich schlechter. Auch der Einsatz des Bibelstellen-Features erbrachte hier keine nennenswerte
+Aus \autoref{fig:confusion_matrix} geht hervor, dass unser Modell wie vermutet Schwierigkeiten in den Kategorien Religion und Atheismus vorweist. 
+Religion wird dabei sogar häufiger als Atheismus klassifiziert, als umgekehrt. 
+Religion wurde nur zu 50\% richtig klassifiziert und erreicht damit den schlechtesten Wert. 
+Auch der Einsatz des Bibelstellen-Features erbrachte hier keine nennenswerte
 Verbesserung.
+Dies ist für den verlässlichen Einsatz viel zu gering.
+Auch \autoref{fig:detailed_accuracy_by_class} spiegelt das wieder.
+Desweiteren ist zu beachten, dass die Texte auch gut über zwanzig Jahre alt sind und damit sind die Muster der Beiträge wahrscheinlich nicht auf Muster mit aktuellen Daten zu übertragen.
 
 \subsection{Einsatz eines alternativen Klassifizierer}
-Einzelne Entscheidungsbäume wie sie J48 erzeugt, neigen oft zu einer sog. Überanpassung. Darunter versteht man, dass der
-Baum mehr Entscheidungen trifft, als die Menge der Trainingsdaten rechtfertigen würden. Der Baum ist also zu speziell und liefert beim
+Einzelne Entscheidungsbäume wie sie J48 erzeugt, neigen oft zu einer sog. Überanpassung. Der Baum ist also zu speziell und liefert beim
 Anwenden auf neue Daten daher eher schlechte Ergebnisse\\
 
 Dieses Problem versucht man durch \emph{Zufallswälder} zu umgehen. Hierbei werden zuerst viele verschiedene Bäume generiert, die im
@@ -286,7 +241,6 @@ Gegensatz zu einem J48-Baum leichtgewichtiger sind. Aus dem entstandenen \emph{W
 Einzelergebnissen der Bäume.\\
 Hierdurch wird der Nachteil einer zu hohen Spezialisierung (Überanpassung) eliminiert und der
 Algorithmus kann auf neue Daten bessere Ergebnisse erzielen.\\
-Da die Bäume parallel erzeugt werden können lassen sich Modelle mit diesem Algorithmus auch sehr schnell erzeugen.\\
 
 Eine Anwendung dieses Algorithmus\footnote{In Weka: Trees/RandomForest} auf unsere Daten ergibt einen F-Wert von 0,743.
 
