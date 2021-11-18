@@ -153,9 +153,9 @@ können weniger mit den Wörtern rumspielen, da wir nicht wirklich eine Größe 
 
 Daher bestimmen wir algorithmisch die Wörter die wir relevant finden.
 
-\subsubsection{Präprocessing der Daten}
+\subsubsection{Preprocessing der Daten}
 
-Zum Erstellen der Wortlisten haben wir zunächst alle Blogs Tokenized, dann die Tokenliste pro Kategorie zusammengefügt. 
+Zum Erstellen der Wortlisten haben wir zunächst alle Blogs Tokenized und dann die Tokenliste pro Kategorie zusammengefügt. 
 Aus diesen Listen haben wir die Stoppwörter entfernt, dann den POS-Tagger angewandt und nur Nomen, Verben, Adjektive und unbekannte Wörter beibehalten.
 
 Anschließend haben wir optional die vorhandenen Wörter gestemmt, mit nltk.PorterStemmer, oder die Wörter so belassen. 
@@ -167,15 +167,15 @@ sodass wir für jedes Wort wissen, wie oft es in den einzelnen Kategorien vorkom
 Anschließend haben wir verschiedene Rankings versucht, die mit den Frequenzverteilungen erstellt wurden. 
 Auf diese wird später eingegangen. Nach diesen Rankings wurden anschließend Wörter ausgesucht. 
 Dabei haben wir 3 optionale Stellschrauben festgelegt: Den Ausschluss von Wörtern, 
-deren Rang unter einem Schwellenwert ist und die Auswahl von N Wörtern nach Rang, einmal je nach Kategorie, einmal insgesamt.
+deren Rang unter einem Schwellenwert ist und die Auswahl von N Wörtern nach Rang, einmal je nach Kategorie, und einmal insgesamt.
 
-Dann zu den Rankings. Hier wurden ein paar alternativen ausprobiert. 
-Der simpelste Algorithmus verwendet einfach nur die Anzahl wie oft das Wort in seiner Kategorie vorkommt ($N_{\text{Kat, wort}}$)
+Nun zu den Rankings. Hier wurden ein paar Alternativen ausprobiert. 
+Der simpelste Algorithmus verwendet einfach nur die Anzahl wie oft das Wort in seiner Kategorie vorkommt ($N_{\text{Kat, wort}}$).
 
-Eine mögliche Verbesserung davon ist es, das Vorkommen des Wortes in der Kategorie durch das Vorkommen in allen zu Teilen ($N_{\text{Kat, wort}} / N_{\text{wort}}$). 
+Eine mögliche Verbesserung davon ist es, das Vorkommen des Wortes in der Kategorie durch das Vorkommen in allen Kategorien zu Teilen ($N_{\text{Kat, wort}} / N_{\text{wort}}$). 
 
 Dies ist allerdings Problematisch, da dadurch auch Wörter gut wegkommen, die insgesamt selten vorkommen, diese sind aber vermutlich kein guter Entscheider sondern einfach ungewöhnliche Wörter.
-Daher wollen wir des weiteren die insgesamt Häufigkeit des Wortes im Vergleich zu allen Wörtern ($N_{\text{wort}} / N$) bestimmen und diese beiden Größen verknüpfen.
+Daher wollen wir des weiteren die insgesamte Häufigkeit des Wortes im Vergleich zu allen Wörtern ($N_{\text{wort}} / N$) bestimmen und diese beiden Größen verknüpfen.
 Eine einfache Multiplikation ($N_{\text{Kat, wort}} / N_{\text{wort}} \times N_{\text{wort}} / N$)
 bewertet allerdings beide Größen ungefähr gleich. 
 Dies ist eine Option, allerdings ist zu vermuten dass der neue Part weniger wichtig ist. 
@@ -186,17 +186,17 @@ Um das zu erreichen bietet sich der Logarithmus an:
 	N_{\text{Kat, wort}} / N_{\text{wort}} \times log(N_{\text{wort}}) / log(N)
 \end{equation}
 
-Wir hatten noch ein paar weitergehende Ideen, wie das ein Wort höher ranken sollte wenn es in anderen Kategorien \textbf{nicht} vorkommt, 
-allerdings haben unsere Versuche dies im Ranking aufzunehmen die Genauigkeit der Algorithmen lediglich verschlechtert.
+Wir hatten noch ein paar weitergehende Ideen, wie das ein Wort höher ranken sollte wenn es in anderen Kategorien \textbf{nicht} vorkommt. 
+Allerdings haben unsere Versuche dies im Ranking aufzunehmen die Genauigkeit der Algorithmen lediglich verschlechtert.
 
 \subsubsection{Erstellung von Features aus den Wörtern}
 
 Für die ungestemmten Wörter haben wir verschiedene Wege versucht ein Feature mit den Wörtern zu erstellen:
 Einmal überprüfen wir lediglich die Anwesenheit eines Wortes.
-Einmal ist das Feature die relative Häufigkeit des Features in dem Blog.
+Einmal ist das Feature die relative Häufigkeit des Wortes in dem Blog.
 
 Diese Features waren ein wenig teuer (in Rechenzeit) und waren, zumindest wie wir sie implementiert haben, nicht auf die gestemmten Wörter anwendbar.
-Daher haben wir für diese Wörter eine andere Variante versucht, in der mit einer Regex die vorkommen gesucht wurden, 
+Daher haben wir für diese Wörter eine andere Variante versucht, in der mit einer Regex die Vorkommen gesucht wurden, 
 und der Wert dadurch geteilt wurde, wie häufig das Wort in dem Blog vorkommen könnte (also die Zeichenlänge des Blogs durch die Zeichenlänge des Wortes).
 
 \subsubsection{Ergebnisse der Vorversuche}

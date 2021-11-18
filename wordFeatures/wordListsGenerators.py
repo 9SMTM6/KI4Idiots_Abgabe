@@ -7,7 +7,7 @@ import sys
 from nltk.probability import FreqDist
 sys.path.append("C:/Users/smaier/Documents/Workspace/ki/KI4Idiots_Abgabe")
 
-from featureApplication import *
+from featureApplication import JsonData
 from nltk.corpus import stopwords
 
 def main():
