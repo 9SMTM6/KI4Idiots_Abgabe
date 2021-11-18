@@ -28,9 +28,9 @@
 \titleformat{\section}{\normalfont\scshape\bfseries}{\thesection}{1.1em}{}
 \titleformat{\subsection}{\normalfont\scshape\bfseries}{\thesubsection}{1.1em}{}
 \titleformat{\subsubsection}{\normalfont\scshape\bfseries}{\thesubsubsection}{1.1em}{}
-\titlespacing*{\section}{0pt}{0.2cm}{0em}
-\titlespacing*{\subsection}{0pt}{0.2cm}{0em}
-\titlespacing*{\subsubsection}{0pt}{0.2cm}{0em}
+\titlespacing*{\section}{0pt}{0.3cm}{0.1em}
+\titlespacing*{\subsection}{0pt}{0.2cm}{0.1em}
+\titlespacing*{\subsubsection}{0pt}{0.2cm}{0.1em}
 
 
 
@@ -225,18 +225,20 @@ Den besten F-Wert von 0,689 erreichten wir schlussendlich mit folgenden Features
 	\item Durchschnittliche Wortlänge und Satzlänge
 \end{itemize}
 
+\subsection{Interpretation des Entscheidungbaums}
+Durch den Einsatz der vielen Features ist unser Entscheidungsbaum nicht mehr sehr gut lesbar, trotzdem konnten wir einige Schlussfolgerungen ziehen.\\
+Die ersten Knoten des Baumes sind die Features die das Vorkommen der Wörter \emph{space}, \emph{graphic} und \emph{disc} zählen. Da an ihnen der ganze Baum
+hängt, haben sie eine hohe Aussagekraft.\\
+Wenn beispielsweise \emph{space} relativ häufig vorkommt, \emph{screen}, \emph{graphic}, \emph{simple} und \emph{disk} aber selten, ist die Zielklasse
+mit hoher Wahrscheinlichkeit 2 "Raumfahrt".\\
+Es wurden 309 Instanzen richtig zugeordnet, der höchste Wert aller Blätter. 
+
 \subsection{Bewertung des trainierten Modells mit Klassifizierer J48}
 Aus \autoref{fig:confusion_matrix} geht hervor, dass unser Modell wie vermutet Schwierigkeiten in den Kategorien Religion und Atheismus vorweist. 
 Religion wird dabei sogar häufiger als Atheismus klassifiziert, als umgekehrt. 
 Religion wurde nur zu 50\% richtig klassifiziert und erreicht damit den schlechtesten Wert. 
 Auch der Einsatz des Bibelstellen-Features erbrachte hier keine nennenswerte
-Verbesserung.
-Durch den Einsatz der vielen Features ist unser Entscheidungsbaum nicht mehr sehr gut lesbar, trotzdem
-konnten wir einige Schlussfolgerungen ziehen.
-Die ersten Knoten des Baumes sind die Features die das Vorkommen der Wörter space, graphic, space
-und disc zählen. Da an ihnen der ganze Baum hängt, haben sie eine Aussagekraft.
-Wenn beispielsweise "space" relativ häufig vorkommt, "screen", "graphic", "simple" und "disk" aber selten, ist die Zielklasse mit hoher Wahrscheinlichkeit 2 "Raumfahrt". Es wurden 309 Instanzen richtig zugeordnet, der höchste Wert aller Blätter. Dies deckt sich mit unseren Erwartungen zu Beginn des Projektes.
-Dies ist für den verlässlichen Einsatz viel zu gering.
+Verbesserung. Dies ist für den verlässlichen Einsatz viel zu gering.\\
 Auch \autoref{fig:detailed_accuracy_by_class} spiegelt das wieder.
 Des weiteren ist zu beachten, dass die Texte auch gut über zwanzig Jahre alt sind und damit sind die Muster der Beiträge wahrscheinlich nicht
 auf Muster mit aktuellen Daten zu übertragen.
